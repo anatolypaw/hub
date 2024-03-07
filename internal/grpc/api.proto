@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option go_package = "/grpcapi";
+
+service Grpcapi {
+    rpc GetCodeForPrint (GetCodeForPrintRequest) returns (CodeForPrint);
+}
+
+message GetCodeForPrintRequest {
+    string gtin = 1;
+}
+
+message CodeForPrint {
+    string gtin = 1;
+    string serial = 2;
+    string crypto = 3;
+}

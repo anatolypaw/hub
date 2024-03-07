@@ -1,4 +1,4 @@
-package mongostore
+package mstore
 
 import (
 	"context"
@@ -22,7 +22,7 @@ type Good_dto struct {
 }
 
 // Добавляет продукт в хранилище, возвращает все поля добавленного продукта
-func (ths *MongoStore) Add(ctx context.Context, good entity.Good) error {
+func (ths *MStore) Add(ctx context.Context, good entity.Good) error {
 	const op = "mongo.Add"
 	// MAPPING
 	mappedGood := Good_dto{
@@ -44,7 +44,7 @@ func (ths *MongoStore) Add(ctx context.Context, good entity.Good) error {
 	return nil
 }
 
-func (ths *MongoStore) Get(ctx context.Context, gtin string,
+func (ths *MStore) Get(ctx context.Context, gtin string,
 ) (entity.Good, error) {
 	const op = "mongo.Get"
 
@@ -76,7 +76,7 @@ func (ths *MongoStore) Get(ctx context.Context, gtin string,
 	return mappedGood, nil
 }
 
-func (ths *MongoStore) GetAll(ctx context.Context) ([]entity.Good, error) {
+func (ths *MStore) GetAll(ctx context.Context) ([]entity.Good, error) {
 	const op = "mongo.GetAll"
 
 	filter := bson.M{}

@@ -1,12 +1,13 @@
 package main
 
 import (
-	"hub/internal/repository/mongostore"
-	"hub/internal/usecase/admin"
-	"hub/internal/usecase/exchange"
-	"hub/internal/usecase/produce"
-	"hub/internal/view/http/mymiddleware"
-	v1 "hub/internal/view/http/v1"
+	"hub/internal/ctxlogger"
+	"hub/internal/mstore"
+	"hub/internal/rest"
+	"hub/internal/usecase/uadmin"
+	"hub/internal/usecase/uexchange"
+	"hub/internal/usecase/uproduce"
+
 	"log/slog"
 	"net/http"
 	"os"
@@ -26,16 +27,16 @@ func main() {
 	logger.Error("Включены ERROR сообщения")
 
 	/* Подключение к базе данных */
-	mstore, err := mongostore.New("mongodb://localhost:27017/", "molocode")
+	mstore, err := mstore.New("mongodb://localhost:27017/", "molocode")
 	if err != nil {
 		logger.Error(err.Error())
 		os.Exit(1)
 	}
 
 	/* Инициализация usecase */
-	admUsecase := admin.New(mstore)
-	exchUsecase := exchange.New(mstore, mstore)
-	prodUsecase := produce.New(mstore, mstore)
+	uadmin := uadmin.New(mstore)
+	uexhange := uexchange.New(mstore, mstore)
+	uproduce := uproduce.New(mstore, mstore)
 
 	/* Инициализация http сервера */
 	router := chi.NewRouter()
@@ -43,22 +44,22 @@ func main() {
 	// Логгер slog встраивается в context
 	// на каждый request создается уникальный req_id и встраивается в context
 	// он выводится в лог для всего дерева вызовов
-	router.Use(mymiddleware.Logger(logger))
+	router.Use(ctxlogger.Logger(logger))
 
 	// Admin
-	router.Post("/v1/admin/addGood", v1.AddGood(admUsecase))
-	router.Get("/v1/admin/getAllGoods", v1.GetAllGoods(admUsecase))
+	router.Post("/v1/admin/addGood", rest.AddGood(uadmin))
+	router.Get("/v1/admin/getAllGoods", rest.GetAllGoods(uadmin))
 
 	// Exchange
-	router.Get("/v1/exchange/getGoodsReqCodes", v1.GetGoodsReqCodes(exchUsecase))
-	router.Post("/v1/exchange/addCodeForPrint", v1.AddCodeForPrint(exchUsecase))
+	router.Get("/v1/exchange/getGoodsReqCodes", rest.GetGoodsReqCodes(uexhange))
+	router.Post("/v1/exchange/addCodeForPrint", rest.AddCodeForPrint(uexhange))
 
 	// Produce
-	router.Get("/v1/produce/getCodeForPrint", v1.GetCodeForPrint(prodUsecase))
-	router.Get("/v1/produce/producePrinted", v1.ProducePrinted(prodUsecase))
+	router.Get("/v1/produce/getCodeForPrint", rest.GetCodeForPrint(uproduce))
+	router.Get("/v1/produce/producePrinted", rest.ProducePrinted(uproduce))
 
 	s := &http.Server{
-		Addr:         "localhost:3000",
+		Addr:         "0.0.0.0:3000",
 		Handler:      router,
 		IdleTimeout:  1 * time.Minute,
 		ReadTimeout:  1 * time.Second,

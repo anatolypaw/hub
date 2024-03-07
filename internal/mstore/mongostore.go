@@ -1,4 +1,4 @@
-package mongostore
+package mstore
 
 import (
 	"context"
@@ -23,13 +23,13 @@ type Cache struct {
 	}
 }
 
-type MongoStore struct {
-	client *mongo.Client
-	db     *mongo.Database
+type MStore struct {
+	//	client *mongo.Client
+	db *mongo.Database
 }
 
 // Возвращает подключение к базе данных
-func New(path string, dbname string) (*MongoStore, error) {
+func New(path string, dbname string) (*MStore, error) {
 	const op = "mongo.New"
 	opts := options.Client().ApplyURI(path).SetTimeout(1000 * time.Millisecond)
 
@@ -44,9 +44,9 @@ func New(path string, dbname string) (*MongoStore, error) {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 
-	con := MongoStore{
-		client: client,
-		db:     client.Database(dbname),
+	con := MStore{
+		//client: client,
+		db: client.Database(dbname),
 	}
 
 	return &con, nil

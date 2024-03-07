@@ -1,4 +1,4 @@
-package mongostore
+package mstore
 
 import "hub/internal/entity"
 

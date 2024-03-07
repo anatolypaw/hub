@@ -1,4 +1,4 @@
-package exchange
+package uexchange
 
 import (
 	"context"
@@ -17,13 +17,13 @@ type iCodeRepo interface {
 	GetCountPrintAvaible(context.Context, string) (uint, error)
 }
 
-type ExchangeUsecase struct {
+type UExchange struct {
 	goodRepo iGoodRepo
 	codeRepo iCodeRepo
 }
 
-func New(goodRepo iGoodRepo, codeRepo iCodeRepo) ExchangeUsecase {
-	return ExchangeUsecase{
+func New(goodRepo iGoodRepo, codeRepo iCodeRepo) UExchange {
+	return UExchange{
 		goodRepo: goodRepo,
 		codeRepo: codeRepo,
 	}
@@ -38,10 +38,10 @@ type CodeReq struct {
 
 // Возвращает список продуктов, требующих наполнения кодами для печати
 // и количество требуемых кодов
-func (eu *ExchangeUsecase) GetGoodsReqCodes(ctx context.Context,
+func (u *UExchange) GetGoodsReqCodes(ctx context.Context,
 ) ([]CodeReq, error) {
 	// - Получить продукты
-	allGoods, err := eu.goodRepo.GetAll(ctx)
+	allGoods, err := u.goodRepo.GetAll(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +57,7 @@ func (eu *ExchangeUsecase) GetGoodsReqCodes(ctx context.Context,
 	// - Для каждого продукта получить доступное количество кодов
 	var codesReq []CodeReq
 	for _, good := range goodsAvaibleForPrint {
-		avaibleCount, err := eu.codeRepo.GetCountPrintAvaible(ctx, good.Gtin)
+		avaibleCount, err := u.codeRepo.GetCountPrintAvaible(ctx, good.Gtin)
 		if err != nil {
 			return nil, err
 		}
@@ -78,7 +78,7 @@ func (eu *ExchangeUsecase) GetGoodsReqCodes(ctx context.Context,
 }
 
 // Добавляет код для печати
-func (usecase *ExchangeUsecase) AddCodeForPrint(
+func (usecase *UExchange) AddCodeForPrint(
 	ctx context.Context,
 	code entity.Code,
 	source string,

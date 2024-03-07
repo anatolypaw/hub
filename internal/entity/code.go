@@ -7,9 +7,9 @@ import (
 )
 
 type Code struct {
-	Gtin   string
-	Serial string
-	Crypto string
+	Gtin   string `json:"gtin"`
+	Serial string `json:"serial"`
+	Crypto string `json:"crypto"`
 }
 
 type CodeForPrint struct {

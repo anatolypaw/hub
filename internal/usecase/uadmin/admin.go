@@ -1,4 +1,4 @@
-package admin
+package uadmin
 
 import (
 	"context"
@@ -18,12 +18,12 @@ type iGoodRepo interface {
 	GetAll(context.Context) ([]entity.Good, error)
 }
 
-type AdminUsecase struct {
+type UAdmin struct {
 	goodRepo iGoodRepo
 }
 
-func New(goodRepo iGoodRepo) AdminUsecase {
-	return AdminUsecase{
+func New(goodRepo iGoodRepo) UAdmin {
+	return UAdmin{
 		goodRepo: goodRepo,
 	}
 }
@@ -31,7 +31,7 @@ func New(goodRepo iGoodRepo) AdminUsecase {
 // Добавляет новый продукт
 // Валидация gtin, desc
 // Ошибка, если такой продукт с таким gtin уже существует
-func (usecase *AdminUsecase) AddGood(ctx context.Context, good entity.Good,
+func (u *UAdmin) AddGood(ctx context.Context, good entity.Good,
 ) error {
 	err := good.ValidateGtin()
 	if err != nil {
@@ -44,10 +44,10 @@ func (usecase *AdminUsecase) AddGood(ctx context.Context, good entity.Good,
 	}
 
 	good.CreatedAt = time.Now()
-	return usecase.goodRepo.Add(ctx, good)
+	return u.goodRepo.Add(ctx, good)
 }
 
-func (ths *AdminUsecase) GetAllGoods(ctx context.Context,
+func (ths *UAdmin) GetAllGoods(ctx context.Context,
 ) ([]entity.Good, error) {
 	// TODO валидировать ответ хранилища
 	// на корректность gtin

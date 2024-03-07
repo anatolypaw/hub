@@ -1,18 +1,18 @@
-package v1
+package rest
 
 import (
 	"encoding/json"
 	"fmt"
 	"hub/internal/ctxlogger"
 	"hub/internal/entity"
-	"hub/internal/usecase/admin"
+	"hub/internal/usecase/uadmin"
 
 	"net/http"
 )
 
 // Добавляет продукт
 // метод POST
-func AddGood(u admin.AdminUsecase) http.HandlerFunc {
+func AddGood(u uadmin.UAdmin) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
 
@@ -63,7 +63,7 @@ func AddGood(u admin.AdminUsecase) http.HandlerFunc {
 
 // Возвращает все продукты из базы
 // метод POST
-func GetAllGoods(usecase admin.AdminUsecase) http.HandlerFunc {
+func GetAllGoods(u uadmin.UAdmin) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
 
@@ -73,7 +73,7 @@ func GetAllGoods(usecase admin.AdminUsecase) http.HandlerFunc {
 		reqId := ctxlogger.GetReqID(r.Context())
 
 		// Получаем продукты
-		goods, err := usecase.GetAllGoods(r.Context())
+		goods, err := u.GetAllGoods(r.Context())
 		if err != nil {
 			l.Error("Ошибка получения продуктов из базы", "error", err)
 			w.WriteHeader(http.StatusBadRequest)

@@ -1,4 +1,4 @@
-package mongostore
+package mstore
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 )
 
 // Добавляет код как есть
-func (ths *MongoStore) AddCode(ctx context.Context, code entity.FullCode) error {
+func (ths *MStore) AddCode(ctx context.Context, code entity.FullCode) error {
 	const op = "mongostore.AddCode"
 
 	// MAPPING
@@ -35,7 +35,7 @@ func (ths *MongoStore) AddCode(ctx context.Context, code entity.FullCode) error 
 // TODO в случае изменения поля printinfo entity.Code,
 // может перестать выполняться запрос
 // Можно решить полнным маппингом структуры кода
-func (ths *MongoStore) GetCountPrintAvaible(ctx context.Context, gtin string,
+func (ths *MStore) GetCountPrintAvaible(ctx context.Context, gtin string,
 ) (uint, error) {
 	filter := bson.M{"printinfo.avaible": true}
 	codes := ths.db.Collection(gtin)
@@ -47,11 +47,7 @@ func (ths *MongoStore) GetCountPrintAvaible(ctx context.Context, gtin string,
 }
 
 // Возвращает код для печати, увеличивает счетчик кодов
-func (ths *MongoStore) GetCodeForPrint(
-	ctx context.Context,
-	gtin string,
-	terminalName string,
-) (entity.CodeForPrint, error) {
+func (m *MStore) GetCodeForPrint(ctx context.Context, gtin string, terminalName string) (entity.CodeForPrint, error) {
 
 	// Получаем код, пригодный для печати, ставим в бд флаг,
 	// что он больше не доступен для печати, что бы заблокировать
@@ -62,7 +58,7 @@ func (ths *MongoStore) GetCodeForPrint(
 		"printinfo.uploadtime":   time.Now()}}
 
 	var code FullCode_dto
-	codes := ths.db.Collection(gtin)
+	codes := m.db.Collection(gtin)
 	err := codes.FindOneAndUpdate(ctx, filter, update).Decode(&code)
 	if err != nil {
 		return entity.CodeForPrint{},
@@ -75,7 +71,7 @@ func (ths *MongoStore) GetCodeForPrint(
 	opt := options.FindOneAndUpdate().SetUpsert(true)
 
 	var printId Counters
-	counters := ths.db.Collection(COLLECTION_COUNTERS)
+	counters := m.db.Collection(COLLECTION_COUNTERS)
 	res := counters.FindOneAndUpdate(ctx, filter, update, opt)
 	err = res.Decode(&printId)
 	if err != nil {
@@ -86,7 +82,7 @@ func (ths *MongoStore) GetCodeForPrint(
 	// Присваиваем коду PrintID
 	filter = bson.M{"_id": code.Serial}
 	update = bson.M{"$set": bson.M{"printinfo.printid": printId.Value}}
-	updResult, err := ths.db.Collection(gtin).UpdateOne(ctx, filter, update)
+	updResult, err := m.db.Collection(gtin).UpdateOne(ctx, filter, update)
 	if err != nil {
 		return entity.CodeForPrint{},
 			fmt.Errorf("присввоение коду printId: %s", err)
@@ -115,7 +111,7 @@ func (ths *MongoStore) GetCodeForPrint(
 }
 
 // Возвращает код
-func (ths *MongoStore) GetCode(
+func (ths *MStore) GetCode(
 	ctx context.Context,
 	gtin string,
 	serial string,

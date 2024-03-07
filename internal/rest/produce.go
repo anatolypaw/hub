@@ -1,16 +1,16 @@
-package v1
+package rest
 
 import (
 	"encoding/json"
 	"fmt"
 	"hub/internal/ctxlogger"
-	"hub/internal/usecase/produce"
+	"hub/internal/usecase/uproduce"
 
 	"net/http"
 )
 
 // Возвращает код для печати
-func GetCodeForPrint(u produce.ProduceUsecase) http.HandlerFunc {
+func GetCodeForPrint(u uproduce.UProduce) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
 
@@ -21,8 +21,8 @@ func GetCodeForPrint(u produce.ProduceUsecase) http.HandlerFunc {
 
 		// - Получаем информацию о запрашиваемом коде из body
 		type Req_json struct {
-			Gtin         string `json:"gtin"`
-			TerminalName string `json:"terminal_name"`
+			Gtin  string `json:"gtin"`
+			Tname string `json:"tname"`
 		}
 
 		req := Req_json{}
@@ -40,7 +40,7 @@ func GetCodeForPrint(u produce.ProduceUsecase) http.HandlerFunc {
 		// Запрашиваем КМ для печати
 		code, err := u.GetCodeForPrint(r.Context(),
 			req.Gtin,
-			req.TerminalName)
+			req.Tname)
 		if err != nil {
 			l.Error("Ошибка получения кода для печати", "error", err)
 			w.WriteHeader(http.StatusBadRequest)
@@ -70,7 +70,7 @@ func GetCodeForPrint(u produce.ProduceUsecase) http.HandlerFunc {
 }
 
 // Отмечает напечатанный код произведенным
-func ProducePrinted(usecase produce.ProduceUsecase) http.HandlerFunc {
+func ProducePrinted(u uproduce.UProduce) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
 
@@ -101,7 +101,7 @@ func ProducePrinted(usecase produce.ProduceUsecase) http.HandlerFunc {
 		}
 
 		// - Обращаемся к usecase
-		err = usecase.ProducePrinted(r.Context(),
+		err = u.ProducePrinted(r.Context(),
 			req.Gtin,
 			req.Serial,
 			req.TerminalName,

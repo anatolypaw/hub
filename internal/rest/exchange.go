@@ -1,18 +1,18 @@
-package v1
+package rest
 
 import (
 	"encoding/json"
 	"fmt"
 	"hub/internal/ctxlogger"
 	"hub/internal/entity"
-	"hub/internal/usecase/exchange"
+	"hub/internal/usecase/uexchange"
 
 	"net/http"
 )
 
 // Добавляет продукт
 // метод POST
-func GetGoodsReqCodes(u exchange.ExchangeUsecase) http.HandlerFunc {
+func GetGoodsReqCodes(u uexchange.UExchange) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
 
@@ -53,7 +53,7 @@ func GetGoodsReqCodes(u exchange.ExchangeUsecase) http.HandlerFunc {
 }
 
 // Доабвляет код для печати
-func AddCodeForPrint(usecase exchange.ExchangeUsecase) http.HandlerFunc {
+func AddCodeForPrint(u uexchange.UExchange) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
 
@@ -89,7 +89,7 @@ func AddCodeForPrint(usecase exchange.ExchangeUsecase) http.HandlerFunc {
 			Crypto: code_json.Сrypto,
 		}
 		// Добавляем продукт
-		err = usecase.AddCodeForPrint(r.Context(), mappedCode, code_json.SourceName)
+		err = u.AddCodeForPrint(r.Context(), mappedCode, code_json.SourceName)
 		if err != nil {
 			l.Warn("Ошибка добавления кода для печати", "error", err)
 			w.WriteHeader(http.StatusBadRequest)
