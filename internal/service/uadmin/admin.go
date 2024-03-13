@@ -14,7 +14,7 @@ import (
 */
 type iGoodRepo interface {
 	Add(context.Context, entity.Good) error
-	Get(context.Context, string) (entity.Good, error)
+	GetGood(context.Context, string) (entity.Good, error)
 	GetAll(context.Context) ([]entity.Good, error)
 }
 

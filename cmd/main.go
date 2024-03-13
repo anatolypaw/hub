@@ -1,12 +1,14 @@
 package main
 
 import (
-	"hub/internal/ctxlogger"
+	grpcapi "hub/internal/api/grpc"
+	pb "hub/internal/api/grpc/grpcapi"
+	"hub/internal/api/rest"
 	"hub/internal/mstore"
-	"hub/internal/rest"
-	"hub/internal/usecase/uadmin"
-	"hub/internal/usecase/uexchange"
-	"hub/internal/usecase/uproduce"
+	"hub/internal/service/produce"
+	"hub/internal/service/uadmin"
+	"hub/internal/service/uexchange"
+	"net"
 
 	"log/slog"
 	"net/http"
@@ -15,10 +17,12 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/lmittmann/tint"
+	"google.golang.org/grpc"
 )
 
 func main() {
 	/* Настройка логгера */
+	//logger := slog.New(slog.Default().Handler())
 	logger := slog.New(tint.NewHandler(os.Stdout, nil))
 	//logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 	logger.Debug("Включены DEBUG сообщения")
@@ -36,15 +40,10 @@ func main() {
 	/* Инициализация usecase */
 	uadmin := uadmin.New(mstore)
 	uexhange := uexchange.New(mstore, mstore)
-	uproduce := uproduce.New(mstore, mstore)
+	uproduce := produce.New(mstore, mstore, *logger)
 
 	/* Инициализация http сервера */
 	router := chi.NewRouter()
-
-	// Логгер slog встраивается в context
-	// на каждый request создается уникальный req_id и встраивается в context
-	// он выводится в лог для всего дерева вызовов
-	router.Use(ctxlogger.Logger(logger))
 
 	// Admin
 	router.Post("/v1/admin/addGood", rest.AddGood(uadmin))
@@ -54,18 +53,33 @@ func main() {
 	router.Get("/v1/exchange/getGoodsReqCodes", rest.GetGoodsReqCodes(uexhange))
 	router.Post("/v1/exchange/addCodeForPrint", rest.AddCodeForPrint(uexhange))
 
-	// Produce
-	router.Get("/v1/produce/getCodeForPrint", rest.GetCodeForPrint(uproduce))
-	router.Get("/v1/produce/producePrinted", rest.ProducePrinted(uproduce))
-
-	s := &http.Server{
-		Addr:         "0.0.0.0:3000",
+	httpserver := &http.Server{
+		Addr:         ":3000",
 		Handler:      router,
 		IdleTimeout:  1 * time.Minute,
 		ReadTimeout:  1 * time.Second,
 		WriteTimeout: 1 * time.Second,
 	}
 
-	logger.Info("Server run on", "addres", s.Addr)
-	logger.Error(s.ListenAndServe().Error())
+	go func() {
+		logger.Info("HTTP server run on", "addres", httpserver.Addr)
+		logger.Error(httpserver.ListenAndServe().Error())
+	}()
+
+	/* Инициализация gRPC сервера */
+	lis, err := net.Listen("tcp", ":3100")
+	if err != nil {
+		logger.Error("failed to listen gRPC: %v", err)
+	}
+
+	var opts []grpc.ServerOption
+
+	grpcserver := grpc.NewServer(opts...)
+	grpcService := grpcapi.New(&uproduce)
+
+	pb.RegisterHubServer(grpcserver, &grpcService)
+	logger.Info("gRPC server run on", "addres", lis.Addr())
+	if err := grpcserver.Serve(lis); err != nil {
+		logger.Error("failed to serve gRPC: %v", err)
+	}
 }

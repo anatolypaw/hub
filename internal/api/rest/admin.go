@@ -3,9 +3,8 @@ package rest
 import (
 	"encoding/json"
 	"fmt"
-	"hub/internal/ctxlogger"
 	"hub/internal/entity"
-	"hub/internal/usecase/uadmin"
+	"hub/internal/service/uadmin"
 
 	"net/http"
 )
@@ -16,11 +15,6 @@ func AddGood(u uadmin.UAdmin) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
 
-		// Подготовка логгера
-		l := ctxlogger.LoggerFromContext(r.Context())
-		l = l.With("func", "v1.AddGood")
-		reqId := ctxlogger.GetReqID(r.Context())
-
 		// Декодируем полученный json
 		// Разрешить только поля, укаказанные в entity.Good
 		good_dto := good_dto{}
@@ -28,10 +22,8 @@ func AddGood(u uadmin.UAdmin) http.HandlerFunc {
 		decoder.DisallowUnknownFields()
 		err := decoder.Decode(&good_dto)
 		if err != nil {
-			l.Error("Json decoder", "error", err)
-
 			w.WriteHeader(http.StatusBadRequest)
-			fmt.Fprint(w, toResponse(reqId, false, err.Error(), nil))
+			fmt.Fprint(w, toResponse(false, err.Error(), nil))
 			return
 		}
 
@@ -49,14 +41,12 @@ func AddGood(u uadmin.UAdmin) http.HandlerFunc {
 		// Добавляем продукт в хранилище
 		err = u.AddGood(r.Context(), mappedGood)
 		if err != nil {
-			l.Warn("Продукт не добавлен", "error", err)
 			w.WriteHeader(http.StatusBadRequest)
-			fmt.Fprint(w, toResponse(reqId, false, err.Error(), nil))
+			fmt.Fprint(w, toResponse(false, err.Error(), nil))
 			return
 		}
 
-		resp_body := toResponse(reqId, true, "Успешно", nil)
-		l.Info("Продукт добавлен", "resp_body", resp_body)
+		resp_body := toResponse(true, "Успешно", nil)
 		fmt.Fprint(w, resp_body)
 	}
 }
@@ -67,17 +57,11 @@ func GetAllGoods(u uadmin.UAdmin) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
 
-		// Подготовка логгера
-		l := ctxlogger.LoggerFromContext(r.Context())
-		l = l.With("func", "v1.GetAllGoods")
-		reqId := ctxlogger.GetReqID(r.Context())
-
 		// Получаем продукты
 		goods, err := u.GetAllGoods(r.Context())
 		if err != nil {
-			l.Error("Ошибка получения продуктов из базы", "error", err)
 			w.WriteHeader(http.StatusBadRequest)
-			fmt.Fprint(w, toResponse(reqId, false, err.Error(), nil))
+			fmt.Fprint(w, toResponse(false, err.Error(), nil))
 			return
 		}
 
@@ -96,8 +80,7 @@ func GetAllGoods(u uadmin.UAdmin) http.HandlerFunc {
 			})
 		}
 
-		resp_body := toResponse(reqId, true, "Успешно", mappedGoods)
-		l.Info("Успешно", "resp_body", resp_body)
+		resp_body := toResponse(true, "Успешно", mappedGoods)
 		fmt.Fprint(w, resp_body)
 	}
 }

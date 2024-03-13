@@ -12,11 +12,6 @@ type Code struct {
 	Crypto string `json:"crypto"`
 }
 
-type CodeForPrint struct {
-	Code    Code
-	PrintId uint64
-}
-
 type FullCode struct {
 	Code
 	SourceInfo   SourceInfo

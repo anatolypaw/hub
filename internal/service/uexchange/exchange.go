@@ -8,7 +8,7 @@ import (
 )
 
 type iGoodRepo interface {
-	Get(context.Context, string) (entity.Good, error)
+	GetGood(context.Context, string) (entity.Good, error)
 	GetAll(context.Context) ([]entity.Good, error)
 }
 
@@ -90,7 +90,7 @@ func (usecase *UExchange) AddCodeForPrint(
 	}
 
 	// - Проверить, разрешено ли для этого продукта добавление кодов
-	good, err := usecase.goodRepo.Get(ctx, code.Gtin)
+	good, err := usecase.goodRepo.GetGood(ctx, code.Gtin)
 	if err != nil {
 		return err
 	}

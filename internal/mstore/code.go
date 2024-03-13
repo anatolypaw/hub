@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // Добавляет код как есть
@@ -47,7 +46,7 @@ func (ths *MStore) GetCountPrintAvaible(ctx context.Context, gtin string,
 }
 
 // Возвращает код для печати, увеличивает счетчик кодов
-func (m *MStore) GetCodeForPrint(ctx context.Context, gtin string, terminalName string) (entity.CodeForPrint, error) {
+func (m *MStore) GetCodeForPrint(ctx context.Context, gtin string, terminalName string) (entity.Code, error) {
 
 	// Получаем код, пригодный для печати, ставим в бд флаг,
 	// что он больше не доступен для печати, что бы заблокировать
@@ -61,53 +60,15 @@ func (m *MStore) GetCodeForPrint(ctx context.Context, gtin string, terminalName 
 	codes := m.db.Collection(gtin)
 	err := codes.FindOneAndUpdate(ctx, filter, update).Decode(&code)
 	if err != nil {
-		return entity.CodeForPrint{},
+		return entity.Code{},
 			fmt.Errorf("получение доступного кода для печати: %s", err)
 	}
 
-	// Получаем PrintId для этого кода, инкрементируем счетчик кодов
-	filter = bson.M{"_id": "nextprintid"}
-	update = bson.M{"$inc": bson.M{"value": 1}}
-	opt := options.FindOneAndUpdate().SetUpsert(true)
-
-	var printId Counters
-	counters := m.db.Collection(COLLECTION_COUNTERS)
-	res := counters.FindOneAndUpdate(ctx, filter, update, opt)
-	err = res.Decode(&printId)
-	if err != nil {
-		return entity.CodeForPrint{},
-			fmt.Errorf("ошибка инкремента nextprintid %s", err)
-	}
-
-	// Присваиваем коду PrintID
-	filter = bson.M{"_id": code.Serial}
-	update = bson.M{"$set": bson.M{"printinfo.printid": printId.Value}}
-	updResult, err := m.db.Collection(gtin).UpdateOne(ctx, filter, update)
-	if err != nil {
-		return entity.CodeForPrint{},
-			fmt.Errorf("присввоение коду printId: %s", err)
-	}
-
-	// Когда PrintID == 0, то обновления происходить не будет,
-	// и будет ложная ошибка, по этому
-	// ошибку для случая с ID = 0 пропускаем
-	if printId.Value > 0 && updResult.ModifiedCount != 1 {
-		return entity.CodeForPrint{},
-			fmt.Errorf("ошибка установки printID для кода GTIN: %s serial: %s",
-				gtin, code.Serial)
-	}
-
-	// Приводим к нужной структуре
-	codeForPrint := entity.CodeForPrint{
-		Code: entity.Code{
-			Gtin:   gtin,
-			Serial: code.Serial,
-			Crypto: code.Crypto,
-		},
-		PrintId: printId.Value,
-	}
-
-	return codeForPrint, nil
+	return entity.Code{
+		Gtin:   gtin,
+		Serial: code.Serial,
+		Crypto: code.Crypto,
+	}, nil
 }
 
 // Возвращает код

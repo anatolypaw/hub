@@ -44,8 +44,7 @@ func (ths *MStore) Add(ctx context.Context, good entity.Good) error {
 	return nil
 }
 
-func (ths *MStore) Get(ctx context.Context, gtin string,
-) (entity.Good, error) {
+func (ths *MStore) GetGood(ctx context.Context, gtin string) (entity.Good, error) {
 	const op = "mongo.Get"
 
 	filter := bson.M{"_id": gtin}
