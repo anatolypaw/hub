@@ -6,7 +6,9 @@ option go_package = "/grpcapi";
 service Hub {
     // Функции для терминала
     rpc GetCodeForPrint (GetCodeForPrintReq) returns (GetCodeForPrintResp);
-    rpc GetProducedCount (GetProducedCountReq) returns (GetProducedCountResp);
+    rpc ProducePrinted (ProducePrintedReq) returns (EmptyResp);
+
+    rpc GetProducedCount (GetProducedCountReq) returns (Int64);
 
     // Функции загрузки выгрузки кодов в базу
     rpc AddCodeForPrint (AddCodeForPrintReq) returns (EmptyResp);
@@ -17,6 +19,9 @@ service Hub {
 
 message EmptyResp {}
 
+message Int64 {
+    int64 value = 1;
+}
 
 //  Функции для терминала
 message GetCodeForPrintReq {
@@ -31,6 +36,13 @@ message GetCodeForPrintResp {
     uint32 id = 4;
 }
 
+// ProducePrinted
+message ProducePrintedReq {
+    string tname = 1;
+    string gtin = 2;
+    string serial = 3;
+    string proddate = 4;
+}
 
 // Возвращает количество произведенных продуктов
 message GetProducedCountReq {
@@ -39,9 +51,7 @@ message GetProducedCountReq {
     string date = 3;
 }
 
-message GetProducedCountResp {
-    int32 count = 1;
-}
+
 
 //
 message AddCodeForPrintReq {

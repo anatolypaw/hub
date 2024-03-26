@@ -15,7 +15,6 @@ const (
 )
 
 type MStore struct {
-	//	client *mongo.Client
 	db     *mongo.Database
 	logger slog.Logger
 }
