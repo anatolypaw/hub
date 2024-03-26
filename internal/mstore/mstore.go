@@ -3,7 +3,7 @@ package mstore
 import (
 	"context"
 	"fmt"
-	"hub/internal/entity"
+	"log/slog"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -11,26 +11,18 @@ import (
 )
 
 const (
-	COLLECTION_GOODS    = "goods"
-	COLLECTION_COUNTERS = "counters"
+	COLLECTION_GOODS = "goods"
 )
-
-// TODO
-type Cache struct {
-	Goods struct {
-		Value      []entity.Good
-		LastUpdate time.Time
-	}
-}
 
 type MStore struct {
 	//	client *mongo.Client
-	db *mongo.Database
+	db     *mongo.Database
+	logger slog.Logger
 }
 
 // Возвращает подключение к базе данных
-func New(path string, dbname string) (*MStore, error) {
-	const op = "mongo.New"
+func New(path string, dbname string, logger slog.Logger) (*MStore, error) {
+	const op = "mstore.New"
 	opts := options.Client().ApplyURI(path).SetTimeout(1000 * time.Millisecond)
 
 	client, err := mongo.Connect(context.TODO(), opts)
@@ -45,8 +37,8 @@ func New(path string, dbname string) (*MStore, error) {
 	}
 
 	con := MStore{
-		//client: client,
-		db: client.Database(dbname),
+		db:     client.Database(dbname),
+		logger: logger,
 	}
 
 	return &con, nil

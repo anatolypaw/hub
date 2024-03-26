@@ -2,9 +2,7 @@ package uexchange
 
 import (
 	"context"
-	"errors"
 	"hub/internal/entity"
-	"time"
 )
 
 type iGoodRepo interface {
@@ -83,38 +81,6 @@ func (usecase *UExchange) AddCodeForPrint(
 	code entity.Code,
 	source string,
 ) error {
-	// - Проверить корректность кода
-	err := code.Validate()
-	if err != nil {
-		return err
-	}
-
-	// - Проверить, разрешено ли для этого продукта добавление кодов
-	good, err := usecase.goodRepo.GetGood(ctx, code.Gtin)
-	if err != nil {
-		return err
-	}
-
-	if !good.GetCodeForPrint {
-		return errors.New("для этотого продукта запрещено получение кодов")
-	}
-
-	// - Добавить код для печати
-	fullCode := entity.FullCode{
-		Code: code,
-		SourceInfo: entity.SourceInfo{
-			Name: source,
-			Time: time.Now(),
-		},
-		PrintInfo: entity.PrintInfo{
-			Avaible: true,
-		},
-	}
-
-	err = usecase.codeRepo.AddCode(ctx, fullCode)
-	if err != nil {
-		return err
-	}
 
 	return nil
 }

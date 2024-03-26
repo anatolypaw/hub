@@ -20,17 +20,14 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type GetCodeForPrintRequest struct {
+type EmptyResp struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
-
-	Tname string `protobuf:"bytes,1,opt,name=tname,proto3" json:"tname,omitempty"`
-	Gtin  string `protobuf:"bytes,2,opt,name=gtin,proto3" json:"gtin,omitempty"`
 }
 
-func (x *GetCodeForPrintRequest) Reset() {
-	*x = GetCodeForPrintRequest{}
+func (x *EmptyResp) Reset() {
+	*x = EmptyResp{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_api_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -38,13 +35,13 @@ func (x *GetCodeForPrintRequest) Reset() {
 	}
 }
 
-func (x *GetCodeForPrintRequest) String() string {
+func (x *EmptyResp) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetCodeForPrintRequest) ProtoMessage() {}
+func (*EmptyResp) ProtoMessage() {}
 
-func (x *GetCodeForPrintRequest) ProtoReflect() protoreflect.Message {
+func (x *EmptyResp) ProtoReflect() protoreflect.Message {
 	mi := &file_api_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -56,35 +53,23 @@ func (x *GetCodeForPrintRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetCodeForPrintRequest.ProtoReflect.Descriptor instead.
-func (*GetCodeForPrintRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use EmptyResp.ProtoReflect.Descriptor instead.
+func (*EmptyResp) Descriptor() ([]byte, []int) {
 	return file_api_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GetCodeForPrintRequest) GetTname() string {
-	if x != nil {
-		return x.Tname
-	}
-	return ""
-}
-
-func (x *GetCodeForPrintRequest) GetGtin() string {
-	if x != nil {
-		return x.Gtin
-	}
-	return ""
-}
-
-type Gtin struct {
+// Функции для терминала
+type GetCodeForPrintReq struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Gtin string `protobuf:"bytes,1,opt,name=gtin,proto3" json:"gtin,omitempty"`
+	Tname string `protobuf:"bytes,1,opt,name=tname,proto3" json:"tname,omitempty"`
+	Gtin  string `protobuf:"bytes,2,opt,name=gtin,proto3" json:"gtin,omitempty"`
 }
 
-func (x *Gtin) Reset() {
-	*x = Gtin{}
+func (x *GetCodeForPrintReq) Reset() {
+	*x = GetCodeForPrintReq{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_api_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -92,13 +77,13 @@ func (x *Gtin) Reset() {
 	}
 }
 
-func (x *Gtin) String() string {
+func (x *GetCodeForPrintReq) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Gtin) ProtoMessage() {}
+func (*GetCodeForPrintReq) ProtoMessage() {}
 
-func (x *Gtin) ProtoReflect() protoreflect.Message {
+func (x *GetCodeForPrintReq) ProtoReflect() protoreflect.Message {
 	mi := &file_api_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -110,28 +95,38 @@ func (x *Gtin) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Gtin.ProtoReflect.Descriptor instead.
-func (*Gtin) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetCodeForPrintReq.ProtoReflect.Descriptor instead.
+func (*GetCodeForPrintReq) Descriptor() ([]byte, []int) {
 	return file_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *Gtin) GetGtin() string {
+func (x *GetCodeForPrintReq) GetTname() string {
+	if x != nil {
+		return x.Tname
+	}
+	return ""
+}
+
+func (x *GetCodeForPrintReq) GetGtin() string {
 	if x != nil {
 		return x.Gtin
 	}
 	return ""
 }
 
-type Tname struct {
+type GetCodeForPrintResp struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Gtin string `protobuf:"bytes,1,opt,name=gtin,proto3" json:"gtin,omitempty"`
+	Gtin   string `protobuf:"bytes,1,opt,name=gtin,proto3" json:"gtin,omitempty"`
+	Serial string `protobuf:"bytes,2,opt,name=serial,proto3" json:"serial,omitempty"`
+	Crypto string `protobuf:"bytes,3,opt,name=crypto,proto3" json:"crypto,omitempty"`
+	Id     uint32 `protobuf:"varint,4,opt,name=id,proto3" json:"id,omitempty"`
 }
 
-func (x *Tname) Reset() {
-	*x = Tname{}
+func (x *GetCodeForPrintResp) Reset() {
+	*x = GetCodeForPrintResp{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_api_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -139,13 +134,13 @@ func (x *Tname) Reset() {
 	}
 }
 
-func (x *Tname) String() string {
+func (x *GetCodeForPrintResp) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Tname) ProtoMessage() {}
+func (*GetCodeForPrintResp) ProtoMessage() {}
 
-func (x *Tname) ProtoReflect() protoreflect.Message {
+func (x *GetCodeForPrintResp) ProtoReflect() protoreflect.Message {
 	mi := &file_api_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -157,30 +152,52 @@ func (x *Tname) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Tname.ProtoReflect.Descriptor instead.
-func (*Tname) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetCodeForPrintResp.ProtoReflect.Descriptor instead.
+func (*GetCodeForPrintResp) Descriptor() ([]byte, []int) {
 	return file_api_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *Tname) GetGtin() string {
+func (x *GetCodeForPrintResp) GetGtin() string {
 	if x != nil {
 		return x.Gtin
 	}
 	return ""
 }
 
-type Code struct {
+func (x *GetCodeForPrintResp) GetSerial() string {
+	if x != nil {
+		return x.Serial
+	}
+	return ""
+}
+
+func (x *GetCodeForPrintResp) GetCrypto() string {
+	if x != nil {
+		return x.Crypto
+	}
+	return ""
+}
+
+func (x *GetCodeForPrintResp) GetId() uint32 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+// Возвращает количество произведенных продуктов
+type GetProducedCountReq struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Gtin   string `protobuf:"bytes,1,opt,name=gtin,proto3" json:"gtin,omitempty"`
-	Serial string `protobuf:"bytes,2,opt,name=serial,proto3" json:"serial,omitempty"`
-	Crypto string `protobuf:"bytes,3,opt,name=crypto,proto3" json:"crypto,omitempty"`
+	Tname string `protobuf:"bytes,1,opt,name=tname,proto3" json:"tname,omitempty"`
+	Gtin  string `protobuf:"bytes,2,opt,name=gtin,proto3" json:"gtin,omitempty"`
+	Date  string `protobuf:"bytes,3,opt,name=date,proto3" json:"date,omitempty"`
 }
 
-func (x *Code) Reset() {
-	*x = Code{}
+func (x *GetProducedCountReq) Reset() {
+	*x = GetProducedCountReq{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_api_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -188,13 +205,13 @@ func (x *Code) Reset() {
 	}
 }
 
-func (x *Code) String() string {
+func (x *GetProducedCountReq) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Code) ProtoMessage() {}
+func (*GetProducedCountReq) ProtoMessage() {}
 
-func (x *Code) ProtoReflect() protoreflect.Message {
+func (x *GetProducedCountReq) ProtoReflect() protoreflect.Message {
 	mi := &file_api_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -206,28 +223,210 @@ func (x *Code) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Code.ProtoReflect.Descriptor instead.
-func (*Code) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetProducedCountReq.ProtoReflect.Descriptor instead.
+func (*GetProducedCountReq) Descriptor() ([]byte, []int) {
 	return file_api_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *Code) GetGtin() string {
+func (x *GetProducedCountReq) GetTname() string {
+	if x != nil {
+		return x.Tname
+	}
+	return ""
+}
+
+func (x *GetProducedCountReq) GetGtin() string {
 	if x != nil {
 		return x.Gtin
 	}
 	return ""
 }
 
-func (x *Code) GetSerial() string {
+func (x *GetProducedCountReq) GetDate() string {
+	if x != nil {
+		return x.Date
+	}
+	return ""
+}
+
+type GetProducedCountResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Count int32 `protobuf:"varint,1,opt,name=count,proto3" json:"count,omitempty"`
+}
+
+func (x *GetProducedCountResp) Reset() {
+	*x = GetProducedCountResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetProducedCountResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetProducedCountResp) ProtoMessage() {}
+
+func (x *GetProducedCountResp) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetProducedCountResp.ProtoReflect.Descriptor instead.
+func (*GetProducedCountResp) Descriptor() ([]byte, []int) {
+	return file_api_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *GetProducedCountResp) GetCount() int32 {
+	if x != nil {
+		return x.Count
+	}
+	return 0
+}
+
+type AddCodeForPrintReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Sname  string `protobuf:"bytes,1,opt,name=sname,proto3" json:"sname,omitempty"`
+	Gtin   string `protobuf:"bytes,2,opt,name=gtin,proto3" json:"gtin,omitempty"`
+	Serial string `protobuf:"bytes,3,opt,name=serial,proto3" json:"serial,omitempty"`
+	Crypto string `protobuf:"bytes,4,opt,name=crypto,proto3" json:"crypto,omitempty"`
+}
+
+func (x *AddCodeForPrintReq) Reset() {
+	*x = AddCodeForPrintReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AddCodeForPrintReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddCodeForPrintReq) ProtoMessage() {}
+
+func (x *AddCodeForPrintReq) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddCodeForPrintReq.ProtoReflect.Descriptor instead.
+func (*AddCodeForPrintReq) Descriptor() ([]byte, []int) {
+	return file_api_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *AddCodeForPrintReq) GetSname() string {
+	if x != nil {
+		return x.Sname
+	}
+	return ""
+}
+
+func (x *AddCodeForPrintReq) GetGtin() string {
+	if x != nil {
+		return x.Gtin
+	}
+	return ""
+}
+
+func (x *AddCodeForPrintReq) GetSerial() string {
 	if x != nil {
 		return x.Serial
 	}
 	return ""
 }
 
-func (x *Code) GetCrypto() string {
+func (x *AddCodeForPrintReq) GetCrypto() string {
 	if x != nil {
 		return x.Crypto
+	}
+	return ""
+}
+
+// Админские функции
+type AddGoodReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Sname string `protobuf:"bytes,1,opt,name=sname,proto3" json:"sname,omitempty"`
+	Gtin  string `protobuf:"bytes,2,opt,name=gtin,proto3" json:"gtin,omitempty"`
+	Desc  string `protobuf:"bytes,3,opt,name=desc,proto3" json:"desc,omitempty"`
+}
+
+func (x *AddGoodReq) Reset() {
+	*x = AddGoodReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AddGoodReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddGoodReq) ProtoMessage() {}
+
+func (x *AddGoodReq) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddGoodReq.ProtoReflect.Descriptor instead.
+func (*AddGoodReq) Descriptor() ([]byte, []int) {
+	return file_api_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *AddGoodReq) GetSname() string {
+	if x != nil {
+		return x.Sname
+	}
+	return ""
+}
+
+func (x *AddGoodReq) GetGtin() string {
+	if x != nil {
+		return x.Gtin
+	}
+	return ""
+}
+
+func (x *AddGoodReq) GetDesc() string {
+	if x != nil {
+		return x.Desc
 	}
 	return ""
 }
@@ -235,25 +434,54 @@ func (x *Code) GetCrypto() string {
 var File_api_proto protoreflect.FileDescriptor
 
 var file_api_proto_rawDesc = []byte{
-	0x0a, 0x09, 0x61, 0x70, 0x69, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x42, 0x0a, 0x16, 0x47,
-	0x65, 0x74, 0x43, 0x6f, 0x64, 0x65, 0x46, 0x6f, 0x72, 0x50, 0x72, 0x69, 0x6e, 0x74, 0x52, 0x65,
-	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x67,
-	0x74, 0x69, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x67, 0x74, 0x69, 0x6e, 0x22,
-	0x1a, 0x0a, 0x04, 0x47, 0x74, 0x69, 0x6e, 0x12, 0x12, 0x0a, 0x04, 0x67, 0x74, 0x69, 0x6e, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x67, 0x74, 0x69, 0x6e, 0x22, 0x1b, 0x0a, 0x05, 0x54,
-	0x6e, 0x61, 0x6d, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x67, 0x74, 0x69, 0x6e, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x04, 0x67, 0x74, 0x69, 0x6e, 0x22, 0x4a, 0x0a, 0x04, 0x43, 0x6f, 0x64, 0x65,
-	0x12, 0x12, 0x0a, 0x04, 0x67, 0x74, 0x69, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04,
-	0x67, 0x74, 0x69, 0x6e, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x65, 0x72, 0x69, 0x61, 0x6c, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x65, 0x72, 0x69, 0x61, 0x6c, 0x12, 0x16, 0x0a, 0x06,
-	0x63, 0x72, 0x79, 0x70, 0x74, 0x6f, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x63, 0x72,
-	0x79, 0x70, 0x74, 0x6f, 0x32, 0x38, 0x0a, 0x03, 0x48, 0x75, 0x62, 0x12, 0x31, 0x0a, 0x0f, 0x47,
-	0x65, 0x74, 0x43, 0x6f, 0x64, 0x65, 0x46, 0x6f, 0x72, 0x50, 0x72, 0x69, 0x6e, 0x74, 0x12, 0x17,
-	0x2e, 0x47, 0x65, 0x74, 0x43, 0x6f, 0x64, 0x65, 0x46, 0x6f, 0x72, 0x50, 0x72, 0x69, 0x6e, 0x74,
-	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x05, 0x2e, 0x43, 0x6f, 0x64, 0x65, 0x42, 0x0a,
-	0x5a, 0x08, 0x2f, 0x67, 0x72, 0x70, 0x63, 0x61, 0x70, 0x69, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x33,
+	0x0a, 0x09, 0x61, 0x70, 0x69, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x0b, 0x0a, 0x09, 0x45,
+	0x6d, 0x70, 0x74, 0x79, 0x52, 0x65, 0x73, 0x70, 0x22, 0x3e, 0x0a, 0x12, 0x47, 0x65, 0x74, 0x43,
+	0x6f, 0x64, 0x65, 0x46, 0x6f, 0x72, 0x50, 0x72, 0x69, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x12, 0x14,
+	0x0a, 0x05, 0x74, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74,
+	0x6e, 0x61, 0x6d, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x67, 0x74, 0x69, 0x6e, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x04, 0x67, 0x74, 0x69, 0x6e, 0x22, 0x69, 0x0a, 0x13, 0x47, 0x65, 0x74, 0x43,
+	0x6f, 0x64, 0x65, 0x46, 0x6f, 0x72, 0x50, 0x72, 0x69, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x12,
+	0x12, 0x0a, 0x04, 0x67, 0x74, 0x69, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x67,
+	0x74, 0x69, 0x6e, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x65, 0x72, 0x69, 0x61, 0x6c, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x65, 0x72, 0x69, 0x61, 0x6c, 0x12, 0x16, 0x0a, 0x06, 0x63,
+	0x72, 0x79, 0x70, 0x74, 0x6f, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x63, 0x72, 0x79,
+	0x70, 0x74, 0x6f, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0d, 0x52,
+	0x02, 0x69, 0x64, 0x22, 0x53, 0x0a, 0x13, 0x47, 0x65, 0x74, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63,
+	0x65, 0x64, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6e,
+	0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x6e, 0x61, 0x6d, 0x65,
+	0x12, 0x12, 0x0a, 0x04, 0x67, 0x74, 0x69, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04,
+	0x67, 0x74, 0x69, 0x6e, 0x12, 0x12, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x65, 0x18, 0x03, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x04, 0x64, 0x61, 0x74, 0x65, 0x22, 0x2c, 0x0a, 0x14, 0x47, 0x65, 0x74, 0x50,
+	0x72, 0x6f, 0x64, 0x75, 0x63, 0x65, 0x64, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70,
+	0x12, 0x14, 0x0a, 0x05, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52,
+	0x05, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0x6e, 0x0a, 0x12, 0x41, 0x64, 0x64, 0x43, 0x6f, 0x64,
+	0x65, 0x46, 0x6f, 0x72, 0x50, 0x72, 0x69, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x12, 0x14, 0x0a, 0x05,
+	0x73, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x73, 0x6e, 0x61,
+	0x6d, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x67, 0x74, 0x69, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x04, 0x67, 0x74, 0x69, 0x6e, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x65, 0x72, 0x69, 0x61, 0x6c,
+	0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x65, 0x72, 0x69, 0x61, 0x6c, 0x12, 0x16,
+	0x0a, 0x06, 0x63, 0x72, 0x79, 0x70, 0x74, 0x6f, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06,
+	0x63, 0x72, 0x79, 0x70, 0x74, 0x6f, 0x22, 0x4a, 0x0a, 0x0a, 0x41, 0x64, 0x64, 0x47, 0x6f, 0x6f,
+	0x64, 0x52, 0x65, 0x71, 0x12, 0x14, 0x0a, 0x05, 0x73, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x05, 0x73, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x67, 0x74,
+	0x69, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x67, 0x74, 0x69, 0x6e, 0x12, 0x12,
+	0x0a, 0x04, 0x64, 0x65, 0x73, 0x63, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x64, 0x65,
+	0x73, 0x63, 0x32, 0xdc, 0x01, 0x0a, 0x03, 0x48, 0x75, 0x62, 0x12, 0x3c, 0x0a, 0x0f, 0x47, 0x65,
+	0x74, 0x43, 0x6f, 0x64, 0x65, 0x46, 0x6f, 0x72, 0x50, 0x72, 0x69, 0x6e, 0x74, 0x12, 0x13, 0x2e,
+	0x47, 0x65, 0x74, 0x43, 0x6f, 0x64, 0x65, 0x46, 0x6f, 0x72, 0x50, 0x72, 0x69, 0x6e, 0x74, 0x52,
+	0x65, 0x71, 0x1a, 0x14, 0x2e, 0x47, 0x65, 0x74, 0x43, 0x6f, 0x64, 0x65, 0x46, 0x6f, 0x72, 0x50,
+	0x72, 0x69, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x12, 0x3f, 0x0a, 0x10, 0x47, 0x65, 0x74, 0x50,
+	0x72, 0x6f, 0x64, 0x75, 0x63, 0x65, 0x64, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x14, 0x2e, 0x47,
+	0x65, 0x74, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x65, 0x64, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x52,
+	0x65, 0x71, 0x1a, 0x15, 0x2e, 0x47, 0x65, 0x74, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x65, 0x64,
+	0x43, 0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x12, 0x32, 0x0a, 0x0f, 0x41, 0x64, 0x64,
+	0x43, 0x6f, 0x64, 0x65, 0x46, 0x6f, 0x72, 0x50, 0x72, 0x69, 0x6e, 0x74, 0x12, 0x13, 0x2e, 0x41,
+	0x64, 0x64, 0x43, 0x6f, 0x64, 0x65, 0x46, 0x6f, 0x72, 0x50, 0x72, 0x69, 0x6e, 0x74, 0x52, 0x65,
+	0x71, 0x1a, 0x0a, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x52, 0x65, 0x73, 0x70, 0x12, 0x22, 0x0a,
+	0x07, 0x41, 0x64, 0x64, 0x47, 0x6f, 0x6f, 0x64, 0x12, 0x0b, 0x2e, 0x41, 0x64, 0x64, 0x47, 0x6f,
+	0x6f, 0x64, 0x52, 0x65, 0x71, 0x1a, 0x0a, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x52, 0x65, 0x73,
+	0x70, 0x42, 0x0a, 0x5a, 0x08, 0x2f, 0x67, 0x72, 0x70, 0x63, 0x61, 0x70, 0x69, 0x62, 0x06, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -268,18 +496,27 @@ func file_api_proto_rawDescGZIP() []byte {
 	return file_api_proto_rawDescData
 }
 
-var file_api_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_api_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_api_proto_goTypes = []interface{}{
-	(*GetCodeForPrintRequest)(nil), // 0: GetCodeForPrintRequest
-	(*Gtin)(nil),                   // 1: Gtin
-	(*Tname)(nil),                  // 2: Tname
-	(*Code)(nil),                   // 3: Code
+	(*EmptyResp)(nil),            // 0: EmptyResp
+	(*GetCodeForPrintReq)(nil),   // 1: GetCodeForPrintReq
+	(*GetCodeForPrintResp)(nil),  // 2: GetCodeForPrintResp
+	(*GetProducedCountReq)(nil),  // 3: GetProducedCountReq
+	(*GetProducedCountResp)(nil), // 4: GetProducedCountResp
+	(*AddCodeForPrintReq)(nil),   // 5: AddCodeForPrintReq
+	(*AddGoodReq)(nil),           // 6: AddGoodReq
 }
 var file_api_proto_depIdxs = []int32{
-	0, // 0: Hub.GetCodeForPrint:input_type -> GetCodeForPrintRequest
-	3, // 1: Hub.GetCodeForPrint:output_type -> Code
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
+	1, // 0: Hub.GetCodeForPrint:input_type -> GetCodeForPrintReq
+	3, // 1: Hub.GetProducedCount:input_type -> GetProducedCountReq
+	5, // 2: Hub.AddCodeForPrint:input_type -> AddCodeForPrintReq
+	6, // 3: Hub.AddGood:input_type -> AddGoodReq
+	2, // 4: Hub.GetCodeForPrint:output_type -> GetCodeForPrintResp
+	4, // 5: Hub.GetProducedCount:output_type -> GetProducedCountResp
+	0, // 6: Hub.AddCodeForPrint:output_type -> EmptyResp
+	0, // 7: Hub.AddGood:output_type -> EmptyResp
+	4, // [4:8] is the sub-list for method output_type
+	0, // [0:4] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -292,7 +529,7 @@ func file_api_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_api_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetCodeForPrintRequest); i {
+			switch v := v.(*EmptyResp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -304,7 +541,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Gtin); i {
+			switch v := v.(*GetCodeForPrintReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -316,7 +553,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Tname); i {
+			switch v := v.(*GetCodeForPrintResp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -328,7 +565,43 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Code); i {
+			switch v := v.(*GetProducedCountReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetProducedCountResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AddCodeForPrintReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AddGoodReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -346,7 +619,7 @@ func file_api_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_api_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

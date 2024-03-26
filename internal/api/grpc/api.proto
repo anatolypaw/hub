@@ -2,25 +2,59 @@ syntax = "proto3";
 
 option go_package = "/grpcapi";
 
+
 service Hub {
-    rpc GetCodeForPrint (GetCodeForPrintRequest) returns (Code);
+    // Функции для терминала
+    rpc GetCodeForPrint (GetCodeForPrintReq) returns (GetCodeForPrintResp);
+    rpc GetProducedCount (GetProducedCountReq) returns (GetProducedCountResp);
+
+    // Функции загрузки выгрузки кодов в базу
+    rpc AddCodeForPrint (AddCodeForPrintReq) returns (EmptyResp);
+
+    // Админские функции
+    rpc AddGood(AddGoodReq) returns (EmptyResp);
 }
 
-message GetCodeForPrintRequest {
+message EmptyResp {}
+
+
+//  Функции для терминала
+message GetCodeForPrintReq {
     string tname = 1;
     string gtin = 2;
 }
 
-message Gtin {
-    string gtin = 1;
-}
-
-message Tname {
-    string gtin = 1;
-}
-
-message Code {
+message GetCodeForPrintResp {
     string gtin = 1;
     string serial = 2;
     string crypto = 3;
+    uint32 id = 4;
+}
+
+
+// Возвращает количество произведенных продуктов
+message GetProducedCountReq {
+    string tname = 1;
+    string gtin = 2;
+    string date = 3;
+}
+
+message GetProducedCountResp {
+    int32 count = 1;
+}
+
+//
+message AddCodeForPrintReq {
+    string sname = 1;
+    string gtin = 2;
+    string serial = 3;
+    string crypto = 4;
+}
+
+
+// Админские функции
+message AddGoodReq {
+    string sname = 1;
+    string gtin = 2;
+    string desc = 3;   
 }

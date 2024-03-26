@@ -6,14 +6,13 @@ import (
 )
 
 type Good struct {
-	Gtin            string
+	Gtin            string `bson:"_id"`
 	Desc            string
 	StoreCount      uint
 	GetCodeForPrint bool
 	AllowProduce    bool
-	AllowPrint      bool
 	Upload          bool
-	CreatedAt       time.Time
+	Created         time.Time
 }
 
 func (ths *Good) ValidateDesc() error {

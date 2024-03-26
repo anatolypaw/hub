@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"hub/internal/entity"
 	"log/slog"
-	"time"
 )
 
 type iGoodRepo interface {
@@ -32,53 +31,6 @@ func New(goodRepo iGoodRepo, codeRepo iCodeRepo, logger slog.Logger) Produce {
 		codeRepo: codeRepo,
 		logger:   logger,
 	}
-}
-
-// Возвращает код для печати
-func (u *Produce) GetCodeForPrint(ctx context.Context, gtin string, tname string) (entity.Code, error) {
-	const op = "Produce.GetCodeForPrint"
-	logger := u.logger.With("func", op).
-		With("tname", tname).
-		With("gtin", gtin)
-
-	var err error
-	var response entity.Code
-
-	start := time.Now()
-	defer func() {
-		since := time.Since(start)
-		logger = logger.With("response", response, "err", err, "duration", since)
-		if err != nil {
-			logger.Warn("Response")
-		} else {
-			logger.Info("Response")
-		}
-	}()
-
-	// - Проверить корректность gtin
-	err = entity.ValidateGtin(gtin)
-	if err != nil {
-		return entity.Code{}, err
-	}
-
-	// - Проверить, разрешено ли для этого продукта выдача кодов для нанесения
-	good, err := u.goodRepo.GetGood(ctx, gtin)
-	if err != nil {
-		return entity.Code{}, fmt.Errorf("ошибка запроса продукта: %s", err)
-	}
-
-	if !good.AllowPrint {
-		return entity.Code{}, errors.New("для этого продукта запрещено выдача кодов для нанесения")
-	}
-
-	// - Получить код для печати
-	// - TODO Проверить корректность кода в ответе БД
-	response, err = u.codeRepo.GetCodeForPrint(ctx, gtin, tname)
-	if err != nil {
-		return entity.Code{}, err
-	}
-
-	return response, nil
 }
 
 // Отмечает ранее напечатанный код произведенным

@@ -7,64 +7,42 @@ import (
 )
 
 type Code struct {
-	Gtin   string `json:"gtin"`
-	Serial string `json:"serial"`
-	Crypto string `json:"crypto"`
+	Gtin   string
+	Serial string
+	Crypto string
 }
 
 type FullCode struct {
-	Code
-	SourceInfo   SourceInfo
-	PrintInfo    PrintInfo
-	ProducedInfo []ProducedInfo
-	UploadInfo   UploadInfo
-}
+	Serial     string `bson:"_id"`
+	Crypto     string
+	Type       string         // print || read
+	PrintInfo  PrintInfo      `bson:",omitempty"`
+	ProduceLog []ProducedInfo `bson:",omitempty"`
 
-func (code *Code) Validate() error {
-	err := ValidateGtin(code.Gtin)
-	if err != nil {
-		return err
-	}
-
-	err = ValidateSerial(code.Serial)
-	if err != nil {
-		return err
-	}
-
-	err = ValidateCrypto(code.Crypto)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// Когда и откуда был загружен код
-type SourceInfo struct {
-	Name string    // Откуда загружен, например с сервера "server main"
-	Time time.Time // Время получения кода
+	ProdDate string // Дата производства
+	Tname    string // Имя линии, на которой произведено
+	Discard  bool   // Брак
 }
 
 // Когда и где код пошел в выпуск продукции. т.е. был  связан с единицей продукции
 type ProducedInfo struct {
-	Terminal string    // Имя линии фасовки, где он был нанесен или считан камерой
-	Time     time.Time // Время, когда код был нанесен или считан на линии
-	ProdDate string    // Дата производства продукта 2023-10-09
-	Discard  bool      // True - операция отбраковки кода
+	Tname        string    // Имя линии фасовки, где он был нанесен или считан камерой
+	Time         time.Time // Время, когда код был нанесен или считан на линии
+	ProdDate     string    // Дата производства продукта 2023-10-09
+	Discard      bool      // True - операция отбраковки кода
+	UploadTime   time.Time // Информация о выгрузке во внешнюю систему
+	UploadStatus string    // Информация о выгрузке во внешнюю систему
 }
 
 // Информация, связанная с печатью
 type PrintInfo struct {
-	Avaible      bool      // Флаг, что код доступен для печати
-	UploadTime   time.Time // Время выдачи кода из базы
-	TerminalName string    // Имя линии, куда передан код
-	PrintID      uint32    // Уникальный номер для кода, присваивается при выдаче кода из БД
-}
+	Sname    string    // Откуда загружен, например с сервера "server main"
+	Loaded   time.Time // Время получения кода
+	Avaible  bool      // Флаг, что код доступен для печати
+	Uploaded time.Time // Время выдачи кода из базы
+	Tname    string    // Имя линии, куда передан код
 
-// Информация о выгрузке во внешнюю систему
-type UploadInfo struct {
-	Time   time.Time
-	Status string
+	PrintID uint32 // Последовательный номер кода в партии и линии, присваивается при выдаче кода на печать
 }
 
 func ValidateSerial(serial string) error {

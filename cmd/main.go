@@ -3,11 +3,7 @@ package main
 import (
 	grpcapi "hub/internal/api/grpc"
 	pb "hub/internal/api/grpc/grpcapi"
-	"hub/internal/api/rest"
 	"hub/internal/mstore"
-	"hub/internal/service/produce"
-	"hub/internal/service/uadmin"
-	"hub/internal/service/uexchange"
 	"net"
 
 	"log/slog"
@@ -31,27 +27,22 @@ func main() {
 	logger.Error("Включены ERROR сообщения")
 
 	/* Подключение к базе данных */
-	mstore, err := mstore.New("mongodb://localhost:27017/", "molocode")
+	mstore, err := mstore.New("mongodb://localhost:27017/", "molocode", *logger)
 	if err != nil {
 		logger.Error(err.Error())
 		os.Exit(1)
 	}
 
-	/* Инициализация usecase */
-	uadmin := uadmin.New(mstore)
-	uexhange := uexchange.New(mstore, mstore)
-	uproduce := produce.New(mstore, mstore, *logger)
-
 	/* Инициализация http сервера */
 	router := chi.NewRouter()
 
 	// Admin
-	router.Post("/v1/admin/addGood", rest.AddGood(uadmin))
-	router.Get("/v1/admin/getAllGoods", rest.GetAllGoods(uadmin))
+	// router.Post("/v1/admin/addGood", rest.AddGood(uadmin))
+	// router.Get("/v1/admin/getAllGoods", rest.GetAllGoods(uadmin))
 
 	// Exchange
-	router.Get("/v1/exchange/getGoodsReqCodes", rest.GetGoodsReqCodes(uexhange))
-	router.Post("/v1/exchange/addCodeForPrint", rest.AddCodeForPrint(uexhange))
+	// router.Get("/v1/exchange/getGoodsReqCodes", rest.GetGoodsReqCodes(uexhange))
+	// router.Post("/v1/exchange/addCodeForPrint", rest.AddCodeForPrint(uexhange))
 
 	httpserver := &http.Server{
 		Addr:         ":3000",
@@ -75,7 +66,7 @@ func main() {
 	var opts []grpc.ServerOption
 
 	grpcserver := grpc.NewServer(opts...)
-	grpcService := grpcapi.New(&uproduce)
+	grpcService := grpcapi.New(mstore)
 
 	pb.RegisterHubServer(grpcserver, &grpcService)
 	logger.Info("gRPC server run on", "addres", lis.Addr())
