@@ -24,7 +24,7 @@ func (m *MStore) AddCodeForPrint(ctx context.Context, sname string, gtin string,
 	defer func() {
 		since := time.Since(start)
 		logger = logger.With("err", err, "duration", since)
-		if err != nil {
+		if err != nil || since > 10*time.Millisecond {
 			logger.Warn("Response")
 		} else {
 			logger.Info("Response")
@@ -65,12 +65,12 @@ func (m *MStore) AddCodeForPrint(ctx context.Context, sname string, gtin string,
 	code := entity.FullCode{
 		Serial: serial,
 		Crypto: crypto,
-		Type:   "print",
 		PrintInfo: entity.PrintInfo{
 			Sname:   sname,
 			Loaded:  time.Now(),
 			Avaible: true,
 		},
+		ProdInfo: []entity.ProdInfo{},
 	}
 
 	collect := m.db.Collection(gtin)

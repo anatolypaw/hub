@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
+	"sync"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -17,6 +18,22 @@ const (
 type MStore struct {
 	db     *mongo.Database
 	logger slog.Logger
+
+	prodCache   map[cacheKey]prodCount
+	prodCacheMu sync.Mutex
+}
+
+// Ключ для кэша счетчиков произведенных продуктов
+type cacheKey struct {
+	Gtin     string
+	ProdDate time.Time
+	Tname    string
+}
+
+// Значения кэша счетчиков
+type prodCount struct {
+	Produced  int64 // Количество произведенных
+	Discarded int64 // Количество отбракованных
 }
 
 // Возвращает подключение к базе данных
@@ -36,8 +53,9 @@ func New(path string, dbname string, logger slog.Logger) (*MStore, error) {
 	}
 
 	con := MStore{
-		db:     client.Database(dbname),
-		logger: logger,
+		db:        client.Database(dbname),
+		logger:    logger,
+		prodCache: map[cacheKey]prodCount{},
 	}
 
 	return &con, nil

@@ -15,15 +15,20 @@ type Code struct {
 type FullCode struct {
 	Serial    string `bson:"_id"`
 	Crypto    string
-	Type      string    // print || read
-	PrintInfo PrintInfo `bson:",omitempty"`
+	PrintInfo PrintInfo
+	ProdInfo  []ProdInfo
+}
 
-	Produced  bool      // Флаг, что код произведен
-	ProdDate  time.Time // Дата производства
-	ProdTime  time.Time // Время, когда код был нанесен или считан на линии
-	ProdTname string    // Имя линии, на которой произведено
-	Discard   bool      // Брак
-	Uploaded  bool      // Флаг, что код выгружен в 1с
+// Информация выгрузки
+type ProdInfo struct {
+	Time time.Time // Время события
+
+	Type     string    // Тип события. discard / produce
+	ProdDate time.Time // Дата производства, если тип produce
+	Tname    string    // Имя линии, на которой произведено или отбраковано
+
+	Uploaded   bool
+	UploadTime time.Time // вермя выгрузки
 }
 
 // Информация, связанная с печатью

@@ -42,10 +42,11 @@ func (s *server) ProducePrinted(ctx context.Context, in *pb.ProducePrintedReq) (
 }
 
 // Возвращает количество произведенных на линии кодов
-func (s *server) GetProducedCount(ctx context.Context, in *pb.GetProducedCountReq) (*pb.Int64, error) {
+func (s *server) GetProducedCount(ctx context.Context, in *pb.GetProducedCountReq) (*pb.GetProducedCountResp, error) {
 	count, err := s.mstore.GetProducedCount(ctx, in.Tname, in.Gtin, in.Date)
-	return &pb.Int64{
-		Value: count,
+	return &pb.GetProducedCountResp{
+		Produced:  count.Produced,
+		Discarded: count.Discarded,
 	}, err
 }
 

@@ -8,7 +8,7 @@ service Hub {
     rpc GetCodeForPrint (GetCodeForPrintReq) returns (GetCodeForPrintResp);
     rpc ProducePrinted (ProducePrintedReq) returns (EmptyResp);
 
-    rpc GetProducedCount (GetProducedCountReq) returns (Int64);
+    rpc GetProducedCount (GetProducedCountReq) returns (GetProducedCountResp);
 
     // Функции загрузки выгрузки кодов в базу
     rpc AddCodeForPrint (AddCodeForPrintReq) returns (EmptyResp);
@@ -18,10 +18,6 @@ service Hub {
 }
 
 message EmptyResp {}
-
-message Int64 {
-    int64 value = 1;
-}
 
 //  Функции для терминала
 message GetCodeForPrintReq {
@@ -51,7 +47,10 @@ message GetProducedCountReq {
     string date = 3;
 }
 
-
+message GetProducedCountResp {
+    int64 produced = 1;
+    int64 discarded = 2;
+}
 
 //
 message AddCodeForPrintReq {

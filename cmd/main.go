@@ -7,11 +7,8 @@ import (
 	"net"
 
 	"log/slog"
-	"net/http"
 	"os"
-	"time"
 
-	"github.com/go-chi/chi"
 	"github.com/lmittmann/tint"
 	"google.golang.org/grpc"
 )
@@ -32,30 +29,6 @@ func main() {
 		logger.Error(err.Error())
 		os.Exit(1)
 	}
-
-	/* Инициализация http сервера */
-	router := chi.NewRouter()
-
-	// Admin
-	// router.Post("/v1/admin/addGood", rest.AddGood(uadmin))
-	// router.Get("/v1/admin/getAllGoods", rest.GetAllGoods(uadmin))
-
-	// Exchange
-	// router.Get("/v1/exchange/getGoodsReqCodes", rest.GetGoodsReqCodes(uexhange))
-	// router.Post("/v1/exchange/addCodeForPrint", rest.AddCodeForPrint(uexhange))
-
-	httpserver := &http.Server{
-		Addr:         ":3000",
-		Handler:      router,
-		IdleTimeout:  1 * time.Minute,
-		ReadTimeout:  1 * time.Second,
-		WriteTimeout: 1 * time.Second,
-	}
-
-	go func() {
-		logger.Info("HTTP server run on", "addres", httpserver.Addr)
-		logger.Error(httpserver.ListenAndServe().Error())
-	}()
 
 	/* Инициализация gRPC сервера */
 	lis, err := net.Listen("tcp", ":3100")

@@ -39,7 +39,7 @@ func (m *MStore) GetCodeForPrint(ctx context.Context, gtin string, tname string)
 	defer func() {
 		since := time.Since(start)
 		logger = logger.With("response", response, "err", err, "duration", since)
-		if err != nil {
+		if err != nil || since > 10*time.Millisecond {
 			logger.Warn("Response")
 		} else {
 			logger.Info("Response")
@@ -74,9 +74,9 @@ func (m *MStore) GetCodeForPrint(ctx context.Context, gtin string, tname string)
 		return CodeForPrint{}, err
 	}
 
-	// Получаем для него printID из счетчика gtin + ":" + текущая дата
+	// Получаем для него printID из счетчика gtin + ":" + tname + ":" + текущая дата
 	// Инкрементируем счетчик кодов
-	cname := gtin + ":" + time.Now().Format("2006-01-02") // год месяц день
+	cname := gtin + ":" + tname + ":" + time.Now().Format("2006-01-02") // год месяц день
 	filter = bson.M{"_id": cname}
 	update = bson.M{"$inc": bson.M{"value": 1}}
 	opt := options.FindOneAndUpdate().SetUpsert(true)

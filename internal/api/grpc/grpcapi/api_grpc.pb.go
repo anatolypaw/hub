@@ -33,7 +33,7 @@ type HubClient interface {
 	// Функции для терминала
 	GetCodeForPrint(ctx context.Context, in *GetCodeForPrintReq, opts ...grpc.CallOption) (*GetCodeForPrintResp, error)
 	ProducePrinted(ctx context.Context, in *ProducePrintedReq, opts ...grpc.CallOption) (*EmptyResp, error)
-	GetProducedCount(ctx context.Context, in *GetProducedCountReq, opts ...grpc.CallOption) (*Int64, error)
+	GetProducedCount(ctx context.Context, in *GetProducedCountReq, opts ...grpc.CallOption) (*GetProducedCountResp, error)
 	// Функции загрузки выгрузки кодов в базу
 	AddCodeForPrint(ctx context.Context, in *AddCodeForPrintReq, opts ...grpc.CallOption) (*EmptyResp, error)
 	// Админские функции
@@ -66,8 +66,8 @@ func (c *hubClient) ProducePrinted(ctx context.Context, in *ProducePrintedReq, o
 	return out, nil
 }
 
-func (c *hubClient) GetProducedCount(ctx context.Context, in *GetProducedCountReq, opts ...grpc.CallOption) (*Int64, error) {
-	out := new(Int64)
+func (c *hubClient) GetProducedCount(ctx context.Context, in *GetProducedCountReq, opts ...grpc.CallOption) (*GetProducedCountResp, error) {
+	out := new(GetProducedCountResp)
 	err := c.cc.Invoke(ctx, Hub_GetProducedCount_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -100,7 +100,7 @@ type HubServer interface {
 	// Функции для терминала
 	GetCodeForPrint(context.Context, *GetCodeForPrintReq) (*GetCodeForPrintResp, error)
 	ProducePrinted(context.Context, *ProducePrintedReq) (*EmptyResp, error)
-	GetProducedCount(context.Context, *GetProducedCountReq) (*Int64, error)
+	GetProducedCount(context.Context, *GetProducedCountReq) (*GetProducedCountResp, error)
 	// Функции загрузки выгрузки кодов в базу
 	AddCodeForPrint(context.Context, *AddCodeForPrintReq) (*EmptyResp, error)
 	// Админские функции
@@ -118,7 +118,7 @@ func (UnimplementedHubServer) GetCodeForPrint(context.Context, *GetCodeForPrintR
 func (UnimplementedHubServer) ProducePrinted(context.Context, *ProducePrintedReq) (*EmptyResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProducePrinted not implemented")
 }
-func (UnimplementedHubServer) GetProducedCount(context.Context, *GetProducedCountReq) (*Int64, error) {
+func (UnimplementedHubServer) GetProducedCount(context.Context, *GetProducedCountReq) (*GetProducedCountResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetProducedCount not implemented")
 }
 func (UnimplementedHubServer) AddCodeForPrint(context.Context, *AddCodeForPrintReq) (*EmptyResp, error) {

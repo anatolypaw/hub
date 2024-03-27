@@ -4,6 +4,9 @@ import (
 	"context"
 	"hub/internal/entity"
 	"time"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // возвращает все поля добавленного продукта
@@ -43,6 +46,17 @@ func (m *MStore) AddGood(ctx context.Context, sname string, gtin string, desc st
 
 	collect := m.db.Collection(COLLECTION_GOODS)
 	_, err = collect.InsertOne(ctx, good)
+	if err != nil {
+		return err
+	}
+
+	// создаем индекс для коллецкии кодов по значению printinfo.avaible
+	coll := m.db.Collection(gtin)
+	indexModel := mongo.IndexModel{
+		Keys: bson.D{{Key: "printinfo.avaible", Value: 1}},
+	}
+
+	_, err = coll.Indexes().CreateOne(context.TODO(), indexModel)
 	if err != nil {
 		return err
 	}

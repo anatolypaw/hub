@@ -9,10 +9,10 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-// Отмечает напечатанный код произведенным
-func (m *MStore) ProducePrinted(ctx context.Context, tname string, gtin string, serial string, proddate string) error {
+// Отмечает код отбракованным
+func (m *MStore) Discard(ctx context.Context, tname string, gtin string, serial string) error {
 	// Логгирование
-	const op = "mstore.ProducePrinted"
+	const op = "mstore.Discard"
 	logger := m.logger.With("func", op).
 		With("tname", tname).
 		With("gtin", gtin).
@@ -50,12 +50,6 @@ func (m *MStore) ProducePrinted(ctx context.Context, tname string, gtin string, 
 		return err
 	}
 
-	// - Проверить корректность даты и преобразовать в time.Time
-	tdate, err := time.Parse("2006-01-02", proddate) // YYYY-MM-DD
-	if err != nil {
-		return err
-	}
-
 	// Получить код и бд
 	filter := bson.M{"_id": serial}
 	collect := m.db.Collection(gtin)
@@ -73,26 +67,21 @@ func (m *MStore) ProducePrinted(ctx context.Context, tname string, gtin string, 
 		return err
 	}
 
-	// Проверка, что код уже произведен по данным в последнем элементе лога
-	last := len(code.ProdInfo) - 1
-	if last >= 0 {
-		if code.ProdInfo[last].Type == "produce" {
-			err = fmt.Errorf("код уже произведен")
-			return err
-		}
+	// Проверка, что код уже произведен
+	if !code.Produced {
+		err = fmt.Errorf("код не произведен")
+		return err
 	}
 
-	// Добавляем данные о производстве в массив (лог)
-	prodInfo := entity.ProdInfo{
-		Time:     time.Now(),
-		Type:     "produce",
-		ProdDate: tdate,
-		Tname:    tname,
-	}
-
+	// Отмечаем его отбракованным
 	filter = bson.M{"_id": serial}
-	update := bson.M{"$push": bson.M{
-		"prodinfo": prodInfo,
+	update := bson.M{"$set": bson.M{
+		"produced":   false,
+		"proddate":   0,
+		"prodtime":   time.Now(),
+		"prodtname":  tname,
+		"discard":    false,
+		"needupload": true,
 	},
 	}
 	_, err = m.db.Collection(gtin).UpdateOne(ctx, filter, update)
@@ -118,6 +107,4 @@ func (m *MStore) ProducePrinted(ctx context.Context, tname string, gtin string, 
 		}
 	}
 	m.prodCacheMu.Unlock()
-
-	return nil
 }
