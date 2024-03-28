@@ -70,6 +70,7 @@ func (m *MStore) GetProducedCount(ctx context.Context, tname string, gtin string
 
 	collection := m.db.Collection(gtin)
 
+	// Поиск
 	// Определяем агрегационный конвейер
 	pipeline := mongo.Pipeline{
 		{{Key: "$match", Value: bson.M{
@@ -105,7 +106,6 @@ func (m *MStore) GetProducedCount(ctx context.Context, tname string, gtin string
 	// Читаем результат
 	if len(result) == 1 {
 		// Получение значения "produced" из текущего элемента результата
-		fmt.Printf("%T\n", result[0]["produced"])
 		produced, ok := result[0]["produced"].(int32)
 		if !ok {
 			// Обработка ошибки, если приведение типа не удалось
@@ -150,7 +150,6 @@ func (m *MStore) GetProducedCount(ctx context.Context, tname string, gtin string
 	// Читаем результат
 	if len(result) == 1 {
 		// Получение значения "discard" из текущего элемента результата
-		fmt.Printf("%T\n", result[0]["produced"])
 		discard, ok := result[0]["produced"].(int32)
 		if !ok {
 			// Обработка ошибки, если приведение типа не удалось

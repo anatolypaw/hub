@@ -39,19 +39,21 @@ func main() {
 	}
 
 	// Добавляем коды для печати
-	fmt.Println(">> Добавляем коды для печати ")
-	for i := 0; i < COUNT; i++ {
-		code := pb.AddCodeForPrintReq{
-			Sname:  SNAME,
-			Gtin:   GTIN,
-			Serial: randomString(6),
-			Crypto: randomString(4),
+	/*
+		fmt.Println(">> Добавляем коды для печати ")
+		for i := 0; i < COUNT; i++ {
+			code := pb.AddCodeForPrintReq{
+				Sname:  SNAME,
+				Gtin:   GTIN,
+				Serial: randomString(6),
+				Crypto: randomString(4),
+			}
+			_, err = hub.AddCodeForPrint(context.TODO(), &code)
+			if err != nil {
+				fmt.Println(err)
+			}
 		}
-		_, err = hub.AddCodeForPrint(context.TODO(), &code)
-		if err != nil {
-			fmt.Println(err)
-		}
-	}
+	*/
 
 	// Получаем код для печати и отмечаем его произведенным
 	req := pb.GetCodeForPrintReq{
@@ -75,6 +77,7 @@ func main() {
 		if err != nil {
 			fmt.Println(err)
 		}
+
 	}
 
 }

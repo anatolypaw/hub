@@ -7,6 +7,7 @@ service Hub {
     // Функции для терминала
     rpc GetCodeForPrint (GetCodeForPrintReq) returns (GetCodeForPrintResp);
     rpc ProducePrinted (ProducePrintedReq) returns (EmptyResp);
+    rpc DiscardBySerial(DiscardBySerialReq) returns (EmptyResp);
 
     rpc GetProducedCount (GetProducedCountReq) returns (GetProducedCountResp);
 
@@ -39,6 +40,15 @@ message ProducePrintedReq {
     string serial = 3;
     string proddate = 4;
 }
+
+
+// Отбраковка
+message DiscardBySerialReq {
+    string tname = 1;
+    string gtin = 2;
+    string serial = 3;
+}
+
 
 // Возвращает количество произведенных продуктов
 message GetProducedCountReq {

@@ -41,6 +41,12 @@ func (s *server) ProducePrinted(ctx context.Context, in *pb.ProducePrintedReq) (
 	return &pb.EmptyResp{}, err
 }
 
+// Отбраковывает код по его serial
+func (s *server) DiscardBySerial(ctx context.Context, in *pb.DiscardBySerialReq) (*pb.EmptyResp, error) {
+	err := s.mstore.DiscardBySerial(ctx, in.Tname, in.Gtin, in.Serial)
+	return &pb.EmptyResp{}, err
+}
+
 // Возвращает количество произведенных на линии кодов
 func (s *server) GetProducedCount(ctx context.Context, in *pb.GetProducedCountReq) (*pb.GetProducedCountResp, error) {
 	count, err := s.mstore.GetProducedCount(ctx, in.Tname, in.Gtin, in.Date)

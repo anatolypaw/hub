@@ -10,7 +10,7 @@ import (
 )
 
 // Отмечает код отбракованным
-func (m *MStore) Discard(ctx context.Context, tname string, gtin string, serial string) error {
+func (m *MStore) DiscardBySerial(ctx context.Context, tname string, gtin string, serial string) error {
 	// Логгирование
 	const op = "mstore.Discard"
 	logger := m.logger.With("func", op).
@@ -58,7 +58,7 @@ func (m *MStore) Discard(ctx context.Context, tname string, gtin string, serial 
 	var code entity.FullCode
 	err = reqResult.Decode(&code)
 	if err != nil {
-		err = fmt.Errorf("код не найден: %s", err)
+		err = fmt.Errorf("ошибка получения кода: %s", err)
 		return err
 	}
 
@@ -67,21 +67,37 @@ func (m *MStore) Discard(ctx context.Context, tname string, gtin string, serial 
 		return err
 	}
 
-	// Проверка, что код уже произведен
-	if !code.Produced {
-		err = fmt.Errorf("код не произведен")
+	// Проверяем, что есть записи в логе
+	if len(code.ProdInfo) == 0 {
+		err = fmt.Errorf("лог пустой, код не был произведен")
 		return err
 	}
 
-	// Отмечаем его отбракованным
+	// Получаем последнюю запись
+	last := code.ProdInfo[len(code.ProdInfo)-1]
+
+	// Проверяем, что он не был ранее отбракован
+	if last.Type == "discard" {
+		err = fmt.Errorf("код уже отбракован")
+		return err
+	}
+
+	// Проверяем, что он был произведен
+	if last.Type != "produce" {
+		err = fmt.Errorf("код не был произведен")
+		return err
+	}
+
+	// Добавляем данные о его отбраковке в массив (лог)
+	prodInfo := entity.ProdInfo{
+		Time:  time.Now(),
+		Type:  "discard",
+		Tname: tname,
+	}
+
 	filter = bson.M{"_id": serial}
-	update := bson.M{"$set": bson.M{
-		"produced":   false,
-		"proddate":   0,
-		"prodtime":   time.Now(),
-		"prodtname":  tname,
-		"discard":    false,
-		"needupload": true,
+	update := bson.M{"$push": bson.M{
+		"prodinfo": prodInfo,
 	},
 	}
 	_, err = m.db.Collection(gtin).UpdateOne(ctx, filter, update)
@@ -92,7 +108,7 @@ func (m *MStore) Discard(ctx context.Context, tname string, gtin string, serial 
 	// Оновляем данные в кэше, увеличиваем количество произведенных
 	key := cacheKey{
 		Gtin:     gtin,
-		ProdDate: tdate,
+		ProdDate: last.ProdDate,
 		Tname:    tname,
 	}
 
@@ -102,9 +118,11 @@ func (m *MStore) Discard(ctx context.Context, tname string, gtin string, serial 
 	// иначе счет пойдет с 0
 	if ok {
 		m.prodCache[key] = prodCount{
-			Produced:  value.Produced + 1,
-			Discarded: value.Discarded,
+			Produced:  value.Produced - 1,
+			Discarded: value.Discarded + 1,
 		}
 	}
 	m.prodCacheMu.Unlock()
+
+	return nil
 }
