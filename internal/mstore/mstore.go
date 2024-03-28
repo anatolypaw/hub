@@ -19,21 +19,15 @@ type MStore struct {
 	db     *mongo.Database
 	logger slog.Logger
 
-	prodCache   map[cacheKey]prodCount
-	prodCacheMu sync.Mutex
+	cacheProdOnTerm   map[cacheKeyProdOnTerm]int64
+	CacheProdOnTermMu sync.Mutex
 }
 
 // Ключ для кэша счетчиков произведенных продуктов
-type cacheKey struct {
+type cacheKeyProdOnTerm struct {
 	Gtin     string
 	ProdDate time.Time
 	Tname    string
-}
-
-// Значения кэша счетчиков
-type prodCount struct {
-	Produced  int64 // Количество произведенных
-	Discarded int64 // Количество отбракованных
 }
 
 // Возвращает подключение к базе данных
@@ -53,9 +47,9 @@ func New(path string, dbname string, logger slog.Logger) (*MStore, error) {
 	}
 
 	con := MStore{
-		db:        client.Database(dbname),
-		logger:    logger,
-		prodCache: map[cacheKey]prodCount{},
+		db:              client.Database(dbname),
+		logger:          logger,
+		cacheProdOnTerm: make(map[cacheKeyProdOnTerm]int64),
 	}
 
 	return &con, nil

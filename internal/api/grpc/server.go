@@ -51,8 +51,7 @@ func (s *server) DiscardBySerial(ctx context.Context, in *pb.DiscardBySerialReq)
 func (s *server) GetProducedCount(ctx context.Context, in *pb.GetProducedCountReq) (*pb.GetProducedCountResp, error) {
 	count, err := s.mstore.GetProducedCount(ctx, in.Tname, in.Gtin, in.Date)
 	return &pb.GetProducedCountResp{
-		Produced:  count.Produced,
-		Discarded: count.Discarded,
+		ThisTerm: count,
 	}, err
 }
 

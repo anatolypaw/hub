@@ -105,24 +105,22 @@ func (m *MStore) DiscardBySerial(ctx context.Context, tname string, gtin string,
 		return err
 	}
 
-	// Оновляем данные в кэше, увеличиваем количество произведенных
-	key := cacheKey{
+	// Обновляем данные в кэше, увеличиваем количество произведенных
+	// Уменьшаем счетчик на той линии, на которой код был произведен, независимо от того, где он был отбракован
+	key := cacheKeyProdOnTerm{
 		Gtin:     gtin,
 		ProdDate: last.ProdDate,
-		Tname:    tname,
+		Tname:    last.Tname,
 	}
 
-	m.prodCacheMu.Lock()
-	value, ok := m.prodCache[key]
+	m.CacheProdOnTermMu.Lock()
+	value, ok := m.cacheProdOnTerm[key]
 	// Обновляем счетчики, только если этот ключ был в кэше
 	// иначе счет пойдет с 0
 	if ok {
-		m.prodCache[key] = prodCount{
-			Produced:  value.Produced - 1,
-			Discarded: value.Discarded + 1,
-		}
+		m.cacheProdOnTerm[key] = value - 1
 	}
-	m.prodCacheMu.Unlock()
+	m.CacheProdOnTermMu.Unlock()
 
 	return nil
 }

@@ -58,8 +58,7 @@ message GetProducedCountReq {
 }
 
 message GetProducedCountResp {
-    int64 produced = 1;
-    int64 discarded = 2;
+    int64 thisTerm = 1;
 }
 
 //

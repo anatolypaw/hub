@@ -101,23 +101,20 @@ func (m *MStore) ProducePrinted(ctx context.Context, tname string, gtin string, 
 	}
 
 	// Оновляем данные в кэше, увеличиваем количество произведенных
-	key := cacheKey{
+	key := cacheKeyProdOnTerm{
 		Gtin:     gtin,
 		ProdDate: tdate,
 		Tname:    tname,
 	}
 
-	m.prodCacheMu.Lock()
-	value, ok := m.prodCache[key]
-	// Обновляем счетчики, только если этот ключ был в кэше
+	m.CacheProdOnTermMu.Lock()
+	prodCount, ok := m.cacheProdOnTerm[key]
+	// Обновляем счетчик, только если этот ключ был в кэше
 	// иначе счет пойдет с 0
 	if ok {
-		m.prodCache[key] = prodCount{
-			Produced:  value.Produced + 1,
-			Discarded: value.Discarded,
-		}
+		m.cacheProdOnTerm[key] = prodCount + 1
 	}
-	m.prodCacheMu.Unlock()
+	m.CacheProdOnTermMu.Unlock()
 
 	return nil
 }
