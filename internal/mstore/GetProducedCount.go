@@ -28,8 +28,6 @@ func (m *MStore) GetProducedCount(ctx context.Context, tname string, gtin string
 		logger = logger.With("thisTerm", thisTerm, "err", err, "duration", since)
 		if err != nil || since > 10*time.Millisecond {
 			logger.Warn("Response")
-		} else {
-			logger.Info("Response")
 		}
 	}()
 

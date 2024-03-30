@@ -54,6 +54,7 @@ func (m *MStore) AddCodeForPrint(ctx context.Context, sname string, gtin string,
 	// - Проверить, разрешено ли для этого продукта добавление кодов
 	good, err := m.GetGood(ctx, gtin)
 	if err != nil {
+		err = fmt.Errorf("получение продукта: %v", err)
 		return err
 	}
 

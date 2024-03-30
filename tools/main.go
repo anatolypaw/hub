@@ -6,20 +6,21 @@ import (
 	pb "hub/internal/api/grpc/grpcapi"
 	"log"
 	"math/rand"
+	"time"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
 const (
-	SNAME = "tools"
+	SNAME = "TEST"
 	GTIN  = "00000000000000"
-	COUNT = 1_000_000
+	COUNT = 30
 )
 
 func main() {
 	// Set up a connection to the server.
-	conn, err := grpc.Dial("localhost:3100", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.Dial("192.168.11.148:3100", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("gRPC did not connect: %v", err)
 	}
@@ -39,21 +40,20 @@ func main() {
 	}
 
 	// Добавляем коды для печати
-	/*
-		fmt.Println(">> Добавляем коды для печати ")
-		for i := 0; i < COUNT; i++ {
-			code := pb.AddCodeForPrintReq{
-				Sname:  SNAME,
-				Gtin:   GTIN,
-				Serial: randomString(6),
-				Crypto: randomString(4),
-			}
-			_, err = hub.AddCodeForPrint(context.TODO(), &code)
-			if err != nil {
-				fmt.Println(err)
-			}
+
+	fmt.Println(">> Добавляем коды для печати ")
+	for i := 0; i < COUNT; i++ {
+		code := pb.AddCodeForPrintReq{
+			Sname:  SNAME,
+			Gtin:   GTIN,
+			Serial: randomString(6),
+			Crypto: randomString(4),
 		}
-	*/
+		_, err = hub.AddCodeForPrint(context.TODO(), &code)
+		if err != nil {
+			fmt.Println(err)
+		}
+	}
 
 	// Получаем код для печати и отмечаем его произведенным
 	req := pb.GetCodeForPrintReq{
@@ -62,6 +62,7 @@ func main() {
 	}
 
 	for i := 0; i < COUNT; i++ {
+		time.Sleep(500 * time.Millisecond)
 		code4print, err := hub.GetCodeForPrint(context.TODO(), &req)
 		if err != nil {
 			fmt.Println(err)

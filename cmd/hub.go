@@ -1,9 +1,12 @@
 package main
 
 import (
+	"flag"
 	grpcapi "hub/internal/api/grpc"
 	pb "hub/internal/api/grpc/grpcapi"
+	"hub/internal/config"
 	"hub/internal/mstore"
+	"log"
 	"net"
 
 	"log/slog"
@@ -14,6 +17,10 @@ import (
 )
 
 func main() {
+	// Парсим флаги командной строки
+	newConfigFlag := flag.Bool("d", false, "создать hub.json конфигурации по умолчанию.")
+	flag.Parse()
+
 	/* Настройка логгера */
 	//logger := slog.New(slog.Default().Handler())
 	logger := slog.New(tint.NewHandler(os.Stdout, nil))
@@ -23,8 +30,29 @@ func main() {
 	logger.Warn("Включены WARN сообщения")
 	logger.Error("Включены ERROR сообщения")
 
+	/* Чтение настроек */
+	// Создаем конфиг
+	cfg := config.New("hub.json")
+	// Если указан параметр, создаем файл конфигурации по умолчанию
+	if *newConfigFlag {
+		cfg.P = config.DefaultConfig
+		err := cfg.Save()
+		if err != nil {
+			log.Print("Ошибка при создании файла конфигурации:", err)
+			return
+		}
+		log.Print("Создан файл конфигурации по умолчанию ", "hub.cfg")
+		return
+	}
+
+	err := cfg.Load()
+	if err != nil {
+		logger.Error("Загрузка конфигурации", err)
+		os.Exit(1)
+	}
+
 	/* Подключение к базе данных */
-	mstore, err := mstore.New("mongodb://localhost:27017/", "molocode", *logger)
+	mstore, err := mstore.New(cfg.P.MongoUri, cfg.P.DbName, *logger)
 	if err != nil {
 		logger.Error(err.Error())
 		os.Exit(1)
