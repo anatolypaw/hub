@@ -6,7 +6,6 @@ import (
 	pb "hub/internal/api/grpc/grpcapi"
 	"log"
 	"math/rand"
-	"time"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -15,7 +14,7 @@ import (
 const (
 	SNAME = "TEST"
 	GTIN  = "00000000000000"
-	COUNT = 30
+	COUNT = 10_000
 )
 
 func main() {
@@ -55,31 +54,33 @@ func main() {
 		}
 	}
 
-	// Получаем код для печати и отмечаем его произведенным
-	req := pb.GetCodeForPrintReq{
-		Tname: SNAME,
-		Gtin:  GTIN,
-	}
-
-	for i := 0; i < COUNT; i++ {
-		time.Sleep(500 * time.Millisecond)
-		code4print, err := hub.GetCodeForPrint(context.TODO(), &req)
-		if err != nil {
-			fmt.Println(err)
+	/*
+		// Получаем код для печати и отмечаем его произведенным
+		req := pb.GetCodeForPrintReq{
+			Tname: SNAME,
+			Gtin:  GTIN,
 		}
 
-		prodcode := pb.ProducePrintedReq{
-			Tname:    SNAME,
-			Gtin:     GTIN,
-			Serial:   code4print.Serial,
-			Proddate: "2024-03-25",
-		}
-		_, err = hub.ProducePrinted(context.TODO(), &prodcode)
-		if err != nil {
-			fmt.Println(err)
-		}
+		for i := 0; i < COUNT; i++ {
+			time.Sleep(500 * time.Millisecond)
+			code4print, err := hub.GetCodeForPrint(context.TODO(), &req)
+			if err != nil {
+				fmt.Println(err)
+			}
 
-	}
+			prodcode := pb.ProducePrintedReq{
+				Tname:    SNAME,
+				Gtin:     GTIN,
+				Serial:   code4print.Serial,
+				Proddate: "2024-03-25",
+			}
+			_, err = hub.ProducePrinted(context.TODO(), &prodcode)
+			if err != nil {
+				fmt.Println(err)
+			}
+
+		}
+	*/
 
 }
 
