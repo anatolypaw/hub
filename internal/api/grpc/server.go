@@ -25,7 +25,7 @@ func (s *server) AddCodeForPrint(ctx context.Context, in *pb.AddCodeForPrintReq)
 
 // Возвращает КМ для нанесения
 func (s *server) GetCodeForPrint(ctx context.Context, in *pb.GetCodeForPrintReq) (*pb.GetCodeForPrintResp, error) {
-	code, err := s.mstore.GetCodeForPrint(ctx, in.Gtin, in.Tname)
+	code, err := s.mstore.GetCodeForPrint(ctx, in.Gtin, in.Tname, in.Proddate)
 
 	return &pb.GetCodeForPrintResp{
 		Gtin:   code.Gtin,

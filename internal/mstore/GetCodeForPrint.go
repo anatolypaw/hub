@@ -25,7 +25,7 @@ type CodeForPrint struct {
 }
 
 // Возвращает код для печати
-func (m *MStore) GetCodeForPrint(ctx context.Context, gtin string, tname string) (CodeForPrint, error) {
+func (m *MStore) GetCodeForPrint(ctx context.Context, gtin string, tname string, proddate string) (CodeForPrint, error) {
 	// Логгирование
 	const op = "mstore.GetCodeForPrint"
 	logger := m.logger.With("func", op).
@@ -57,6 +57,12 @@ func (m *MStore) GetCodeForPrint(ctx context.Context, gtin string, tname string)
 		return CodeForPrint{}, err
 	}
 
+	// - Проверить корректность даты и преобразовать в time.Time
+	_, err = time.Parse("2006-01-02", proddate) // YYYY-MM-DD
+	if err != nil {
+		return CodeForPrint{}, err
+	}
+
 	// Получаем код, пригодный для печати, ставим в бд флаг,
 	// что он больше не доступен для печати, что бы заблокировать
 	// возможность получения этого кода в другом потоке
@@ -74,9 +80,9 @@ func (m *MStore) GetCodeForPrint(ctx context.Context, gtin string, tname string)
 		return CodeForPrint{}, err
 	}
 
-	// Получаем для него printID из счетчика gtin + ":" + tname + ":" + текущая дата
+	// Получаем для него printID из счетчика gtin + ":" + tname + ":" + дата фасовки
 	// Инкрементируем счетчик кодов
-	cname := gtin + ":" + tname + ":" + time.Now().Format("2006-01-02") // год месяц день
+	cname := gtin + ":" + tname + ":" + proddate // год месяц день
 	filter = bson.M{"_id": cname}
 	update = bson.M{"$inc": bson.M{"value": 1}}
 	opt := options.FindOneAndUpdate().SetUpsert(true)
