@@ -25,7 +25,7 @@ type CodeForPrint struct {
 }
 
 // Возвращает код для печати
-func (m *MStore) GetCodeForPrint(ctx context.Context, gtin string, tname string, proddate string) (CodeForPrint, error) {
+func (m *MStore) GetCodeForPrint(ctx context.Context, gtin, tname, proddate string) (CodeForPrint, error) {
 	// Логгирование
 	const op = "mstore.GetCodeForPrint"
 	logger := m.logger.With("func", op).

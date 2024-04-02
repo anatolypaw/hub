@@ -27,6 +27,5 @@ func (m *MStore) GetAllGoods(ctx context.Context) ([]entity.Good, error) {
 		}
 		goods = append(goods, good)
 	}
-
 	return goods, nil
 }

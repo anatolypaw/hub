@@ -97,3 +97,8 @@ func (s *server) GetCodeForUpload(ctx context.Context, in *pb.GetCodeForUploadRe
 		Discard:  code.Discard,
 	}, err
 }
+
+// Устанавливает код выгруженным
+func (s *server) SetCodeUploaded(ctx context.Context, in *pb.SetCodeUploadedReq) (*pb.Empty, error) {
+	return &pb.Empty{}, s.mstore.SetCodeUploaded(ctx, in.Gtin, in.Serial, in.Entryid)
+}
