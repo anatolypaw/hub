@@ -6,19 +6,20 @@ option go_package = "/grpcapi";
 service Hub {
     // Функции для терминала
     rpc GetCodeForPrint (GetCodeForPrintReq) returns (GetCodeForPrintResp);
-    rpc ProducePrinted (ProducePrintedReq) returns (EmptyResp);
-    rpc DiscardBySerial(DiscardBySerialReq) returns (EmptyResp);
+    rpc ProducePrinted (ProducePrintedReq) returns (Empty);
+    rpc DiscardBySerial(DiscardBySerialReq) returns (Empty);
 
     rpc GetProducedCount (GetProducedCountReq) returns (GetProducedCountResp);
 
     // Функции загрузки выгрузки кодов в базу
-    rpc AddCodeForPrint (AddCodeForPrintReq) returns (EmptyResp);
+    rpc AddCodeForPrint (AddCodeForPrintReq) returns (Empty);
 
     // Админские функции
-    rpc AddGood(AddGoodReq) returns (EmptyResp);
+    rpc AddGood(AddGoodReq) returns (Empty);
+    rpc GetGoodsCodeReq(Empty) returns (GetGoodsCodeResp);
 }
 
-message EmptyResp {}
+message Empty {}
 
 //  Функции для терминала
 message GetCodeForPrintReq {
@@ -76,4 +77,14 @@ message AddGoodReq {
     string sname = 1;
     string gtin = 2;
     string desc = 3;   
+}
+
+message GetGoodsCodeGood {
+    string gtin = 1;
+    string desc = 2;
+    int64 count = 3;
+}
+
+message GetGoodsCodeResp {
+    repeated GetGoodsCodeGood good = 1;
 }

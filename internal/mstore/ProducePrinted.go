@@ -73,6 +73,12 @@ func (m *MStore) ProducePrinted(ctx context.Context, tname string, gtin string, 
 		return err
 	}
 
+	// Проверка, что код был напечтан
+	if code.PrintInfo.Avaible {
+		err = fmt.Errorf("код не напечатан")
+		return err
+	}
+
 	// Проверка, что код уже произведен по данным в последнем элементе лога
 	last := len(code.ProdInfo) - 1
 	if last >= 0 {

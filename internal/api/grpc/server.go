@@ -18,7 +18,7 @@ func New(mstore *mstore.MStore) server {
 }
 
 // Добавляет код для печати
-func (s *server) AddCodeForPrint(ctx context.Context, in *pb.AddCodeForPrintReq) (*pb.EmptyResp, error) {
+func (s *server) AddCodeForPrint(ctx context.Context, in *pb.AddCodeForPrintReq) (*pb.Empty, error) {
 	err := s.mstore.AddCodeForPrint(ctx, in.Sname, in.Gtin, in.Serial, in.Crypto)
 	return nil, err
 }
@@ -36,15 +36,15 @@ func (s *server) GetCodeForPrint(ctx context.Context, in *pb.GetCodeForPrintReq)
 }
 
 // Отмечает напечатанный код произведенным
-func (s *server) ProducePrinted(ctx context.Context, in *pb.ProducePrintedReq) (*pb.EmptyResp, error) {
+func (s *server) ProducePrinted(ctx context.Context, in *pb.ProducePrintedReq) (*pb.Empty, error) {
 	err := s.mstore.ProducePrinted(ctx, in.Tname, in.Gtin, in.Serial, in.Proddate)
-	return &pb.EmptyResp{}, err
+	return &pb.Empty{}, err
 }
 
 // Отбраковывает код по его serial
-func (s *server) DiscardBySerial(ctx context.Context, in *pb.DiscardBySerialReq) (*pb.EmptyResp, error) {
+func (s *server) DiscardBySerial(ctx context.Context, in *pb.DiscardBySerialReq) (*pb.Empty, error) {
 	err := s.mstore.DiscardBySerial(ctx, in.Tname, in.Gtin, in.Serial)
-	return &pb.EmptyResp{}, err
+	return &pb.Empty{}, err
 }
 
 // Возвращает количество произведенных на линии кодов
@@ -56,7 +56,30 @@ func (s *server) GetProducedCount(ctx context.Context, in *pb.GetProducedCountRe
 }
 
 // Добавляет продукт
-func (s *server) AddGood(ctx context.Context, in *pb.AddGoodReq) (*pb.EmptyResp, error) {
+func (s *server) AddGood(ctx context.Context, in *pb.AddGoodReq) (*pb.Empty, error) {
 	err := s.mstore.AddGood(ctx, in.Sname, in.Gtin, in.Desc)
-	return &pb.EmptyResp{}, err
+	return &pb.Empty{}, err
+}
+
+// Возвращает продукты и требуемое для них количество кодов
+func (s *server) GetGoodsCodeReq(ctx context.Context, in *pb.Empty) (*pb.GetGoodsCodeResp, error) {
+	goods, err := s.mstore.GetGoodsCodeReq(ctx)
+	if err != nil {
+		return &pb.GetGoodsCodeResp{}, err
+	}
+
+	var goods_resp []*pb.GetGoodsCodeGood
+	for _, good := range goods {
+		goods_resp = append(goods_resp,
+			&pb.GetGoodsCodeGood{
+				Gtin:  good.Gtin,
+				Desc:  good.Desc,
+				Count: good.Required,
+			},
+		)
+	}
+
+	return &pb.GetGoodsCodeResp{
+		Good: goods_resp,
+	}, nil
 }

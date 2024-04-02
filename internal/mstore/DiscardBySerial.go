@@ -58,7 +58,7 @@ func (m *MStore) DiscardBySerial(ctx context.Context, tname string, gtin string,
 	var code entity.FullCode
 	err = reqResult.Decode(&code)
 	if err != nil {
-		err = fmt.Errorf("ошибка получения кода: %s", err)
+		err = fmt.Errorf("код не фасован: %s", err)
 		return err
 	}
 

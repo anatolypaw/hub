@@ -43,7 +43,7 @@ type PrintInfo struct {
 }
 
 func ValidateSerial(serial string) error {
-	r := regexp.MustCompile(`^([a-zA-Z0-9]|[!"%&'*+\-.\/_,:;=<>?]){6}$`)
+	r := regexp.MustCompile(`^([a-zA-Z0-9]|[!"%&'*+\-.\/_,:;=<>?()]){6}$`)
 
 	if !r.MatchString(serial) {
 		return errors.New("некорректный формат serial")
@@ -52,7 +52,7 @@ func ValidateSerial(serial string) error {
 }
 
 func ValidateCrypto(crypto string) error {
-	r := regexp.MustCompile(`^([a-zA-Z0-9]|[!"%&'*+\-.\/_,:;=<>?]){4}$`)
+	r := regexp.MustCompile(`^([a-zA-Z0-9]|[!"%&'*+\-.\/_,:;=<>?()]){4}$`)
 
 	if !r.MatchString(crypto) {
 		return errors.New("некорректный формат crypto")

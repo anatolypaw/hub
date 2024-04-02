@@ -25,6 +25,7 @@ const (
 	Hub_GetProducedCount_FullMethodName = "/Hub/GetProducedCount"
 	Hub_AddCodeForPrint_FullMethodName  = "/Hub/AddCodeForPrint"
 	Hub_AddGood_FullMethodName          = "/Hub/AddGood"
+	Hub_GetGoodsCodeReq_FullMethodName  = "/Hub/GetGoodsCodeReq"
 )
 
 // HubClient is the client API for Hub service.
@@ -33,13 +34,14 @@ const (
 type HubClient interface {
 	// Функции для терминала
 	GetCodeForPrint(ctx context.Context, in *GetCodeForPrintReq, opts ...grpc.CallOption) (*GetCodeForPrintResp, error)
-	ProducePrinted(ctx context.Context, in *ProducePrintedReq, opts ...grpc.CallOption) (*EmptyResp, error)
-	DiscardBySerial(ctx context.Context, in *DiscardBySerialReq, opts ...grpc.CallOption) (*EmptyResp, error)
+	ProducePrinted(ctx context.Context, in *ProducePrintedReq, opts ...grpc.CallOption) (*Empty, error)
+	DiscardBySerial(ctx context.Context, in *DiscardBySerialReq, opts ...grpc.CallOption) (*Empty, error)
 	GetProducedCount(ctx context.Context, in *GetProducedCountReq, opts ...grpc.CallOption) (*GetProducedCountResp, error)
 	// Функции загрузки выгрузки кодов в базу
-	AddCodeForPrint(ctx context.Context, in *AddCodeForPrintReq, opts ...grpc.CallOption) (*EmptyResp, error)
+	AddCodeForPrint(ctx context.Context, in *AddCodeForPrintReq, opts ...grpc.CallOption) (*Empty, error)
 	// Админские функции
-	AddGood(ctx context.Context, in *AddGoodReq, opts ...grpc.CallOption) (*EmptyResp, error)
+	AddGood(ctx context.Context, in *AddGoodReq, opts ...grpc.CallOption) (*Empty, error)
+	GetGoodsCodeReq(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*GetGoodsCodeResp, error)
 }
 
 type hubClient struct {
@@ -59,8 +61,8 @@ func (c *hubClient) GetCodeForPrint(ctx context.Context, in *GetCodeForPrintReq,
 	return out, nil
 }
 
-func (c *hubClient) ProducePrinted(ctx context.Context, in *ProducePrintedReq, opts ...grpc.CallOption) (*EmptyResp, error) {
-	out := new(EmptyResp)
+func (c *hubClient) ProducePrinted(ctx context.Context, in *ProducePrintedReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, Hub_ProducePrinted_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -68,8 +70,8 @@ func (c *hubClient) ProducePrinted(ctx context.Context, in *ProducePrintedReq, o
 	return out, nil
 }
 
-func (c *hubClient) DiscardBySerial(ctx context.Context, in *DiscardBySerialReq, opts ...grpc.CallOption) (*EmptyResp, error) {
-	out := new(EmptyResp)
+func (c *hubClient) DiscardBySerial(ctx context.Context, in *DiscardBySerialReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, Hub_DiscardBySerial_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -86,8 +88,8 @@ func (c *hubClient) GetProducedCount(ctx context.Context, in *GetProducedCountRe
 	return out, nil
 }
 
-func (c *hubClient) AddCodeForPrint(ctx context.Context, in *AddCodeForPrintReq, opts ...grpc.CallOption) (*EmptyResp, error) {
-	out := new(EmptyResp)
+func (c *hubClient) AddCodeForPrint(ctx context.Context, in *AddCodeForPrintReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, Hub_AddCodeForPrint_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -95,9 +97,18 @@ func (c *hubClient) AddCodeForPrint(ctx context.Context, in *AddCodeForPrintReq,
 	return out, nil
 }
 
-func (c *hubClient) AddGood(ctx context.Context, in *AddGoodReq, opts ...grpc.CallOption) (*EmptyResp, error) {
-	out := new(EmptyResp)
+func (c *hubClient) AddGood(ctx context.Context, in *AddGoodReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, Hub_AddGood_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *hubClient) GetGoodsCodeReq(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*GetGoodsCodeResp, error) {
+	out := new(GetGoodsCodeResp)
+	err := c.cc.Invoke(ctx, Hub_GetGoodsCodeReq_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -110,13 +121,14 @@ func (c *hubClient) AddGood(ctx context.Context, in *AddGoodReq, opts ...grpc.Ca
 type HubServer interface {
 	// Функции для терминала
 	GetCodeForPrint(context.Context, *GetCodeForPrintReq) (*GetCodeForPrintResp, error)
-	ProducePrinted(context.Context, *ProducePrintedReq) (*EmptyResp, error)
-	DiscardBySerial(context.Context, *DiscardBySerialReq) (*EmptyResp, error)
+	ProducePrinted(context.Context, *ProducePrintedReq) (*Empty, error)
+	DiscardBySerial(context.Context, *DiscardBySerialReq) (*Empty, error)
 	GetProducedCount(context.Context, *GetProducedCountReq) (*GetProducedCountResp, error)
 	// Функции загрузки выгрузки кодов в базу
-	AddCodeForPrint(context.Context, *AddCodeForPrintReq) (*EmptyResp, error)
+	AddCodeForPrint(context.Context, *AddCodeForPrintReq) (*Empty, error)
 	// Админские функции
-	AddGood(context.Context, *AddGoodReq) (*EmptyResp, error)
+	AddGood(context.Context, *AddGoodReq) (*Empty, error)
+	GetGoodsCodeReq(context.Context, *Empty) (*GetGoodsCodeResp, error)
 	mustEmbedUnimplementedHubServer()
 }
 
@@ -127,20 +139,23 @@ type UnimplementedHubServer struct {
 func (UnimplementedHubServer) GetCodeForPrint(context.Context, *GetCodeForPrintReq) (*GetCodeForPrintResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCodeForPrint not implemented")
 }
-func (UnimplementedHubServer) ProducePrinted(context.Context, *ProducePrintedReq) (*EmptyResp, error) {
+func (UnimplementedHubServer) ProducePrinted(context.Context, *ProducePrintedReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProducePrinted not implemented")
 }
-func (UnimplementedHubServer) DiscardBySerial(context.Context, *DiscardBySerialReq) (*EmptyResp, error) {
+func (UnimplementedHubServer) DiscardBySerial(context.Context, *DiscardBySerialReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DiscardBySerial not implemented")
 }
 func (UnimplementedHubServer) GetProducedCount(context.Context, *GetProducedCountReq) (*GetProducedCountResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetProducedCount not implemented")
 }
-func (UnimplementedHubServer) AddCodeForPrint(context.Context, *AddCodeForPrintReq) (*EmptyResp, error) {
+func (UnimplementedHubServer) AddCodeForPrint(context.Context, *AddCodeForPrintReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddCodeForPrint not implemented")
 }
-func (UnimplementedHubServer) AddGood(context.Context, *AddGoodReq) (*EmptyResp, error) {
+func (UnimplementedHubServer) AddGood(context.Context, *AddGoodReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddGood not implemented")
+}
+func (UnimplementedHubServer) GetGoodsCodeReq(context.Context, *Empty) (*GetGoodsCodeResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetGoodsCodeReq not implemented")
 }
 func (UnimplementedHubServer) mustEmbedUnimplementedHubServer() {}
 
@@ -263,6 +278,24 @@ func _Hub_AddGood_Handler(srv interface{}, ctx context.Context, dec func(interfa
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Hub_GetGoodsCodeReq_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HubServer).GetGoodsCodeReq(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Hub_GetGoodsCodeReq_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HubServer).GetGoodsCodeReq(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Hub_ServiceDesc is the grpc.ServiceDesc for Hub service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -293,6 +326,10 @@ var Hub_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AddGood",
 			Handler:    _Hub_AddGood_Handler,
+		},
+		{
+			MethodName: "GetGoodsCodeReq",
+			Handler:    _Hub_GetGoodsCodeReq_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

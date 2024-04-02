@@ -16,6 +16,8 @@ import (
 	"google.golang.org/grpc"
 )
 
+const version = "0.0.1"
+
 func main() {
 	// Парсим флаги командной строки
 	newConfigFlag := flag.Bool("d", false, "создать hub.json конфигурации по умолчанию.")
@@ -29,6 +31,8 @@ func main() {
 	logger.Info("Включены INFO сообщения")
 	logger.Warn("Включены WARN сообщения")
 	logger.Error("Включены ERROR сообщения")
+
+	logger.Info("version", "version", version)
 
 	/* Чтение настроек */
 	// Создаем конфиг
