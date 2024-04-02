@@ -6,6 +6,7 @@ import (
 	"hub/internal/entity"
 	"time"
 
+	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
@@ -90,6 +91,7 @@ func (m *MStore) ProducePrinted(ctx context.Context, tname string, gtin string, 
 
 	// Добавляем данные о производстве в массив (лог)
 	prodInfo := entity.ProdInfo{
+		ID:       uuid.New().String(),
 		Time:     time.Now(),
 		Type:     "produce",
 		ProdDate: tdate,

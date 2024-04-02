@@ -6,6 +6,7 @@ import (
 	"hub/internal/entity"
 	"time"
 
+	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
@@ -90,9 +91,12 @@ func (m *MStore) DiscardBySerial(ctx context.Context, tname string, gtin string,
 
 	// Добавляем данные о его отбраковке в массив (лог)
 	prodInfo := entity.ProdInfo{
-		Time:  time.Now(),
-		Type:  "discard",
-		Tname: tname,
+		ID:   uuid.New().String(),
+		Time: time.Now(),
+		Type: "discard",
+		// Записываем в отбраковку дату, которой код ранее был произведен, так как в шлюз при отбраковке нужно передавать дату, которой код был произведен
+		ProdDate: last.ProdDate,
+		Tname:    tname,
 	}
 
 	filter = bson.M{"_id": serial}

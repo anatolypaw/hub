@@ -22,6 +22,7 @@ require (
 require (
 	github.com/go-chi/chi v1.5.5
 	github.com/golang/snappy v0.0.1 // indirect
+	github.com/google/uuid v1.6.0
 	github.com/klauspost/compress v1.13.6 // indirect
 	github.com/lmittmann/tint v1.0.4
 	github.com/youmark/pkcs8 v0.0.0-20181117223130-1be2e3e5546d // indirect

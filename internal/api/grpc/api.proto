@@ -17,6 +17,7 @@ service Hub {
     // Админские функции
     rpc AddGood(AddGoodReq) returns (Empty);
     rpc GetGoodsCodeReq(Empty) returns (GetGoodsCodeResp);
+    rpc GetCodeForUpload(GetCodeForUploadReq) returns (GetCodeForUploadResp);
 }
 
 message Empty {}
@@ -87,4 +88,17 @@ message GetGoodsCodeGood {
 
 message GetGoodsCodeResp {
     repeated GetGoodsCodeGood good = 1;
+}
+
+message GetCodeForUploadReq {
+    string gtin = 1;
+}
+
+message GetCodeForUploadResp {
+    string gtin = 1;
+    string serial = 2;
+    string crypto = 3;
+    string proddate = 4;
+    string entryid = 5;
+    bool discard = 6;
 }

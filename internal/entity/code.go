@@ -21,6 +21,7 @@ type FullCode struct {
 
 // Информация выгрузки
 type ProdInfo struct {
+	ID   string    // айди записи TODO переделать
 	Time time.Time // Время события
 
 	Type     string    // Тип события. discard / produce
