@@ -32,7 +32,7 @@ func main() {
 	logger.Error("Включены ERROR сообщения")
 
 	// Set up a connection to the server.
-	conn, err := grpc.Dial("localhost:3100", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.Dial("192.168.11.148:3100", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		logger.Error("gRPC did not connect: %v", err)
 	}

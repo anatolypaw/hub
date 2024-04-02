@@ -32,7 +32,7 @@ func main() {
 	logger.Error("Включены ERROR сообщения")
 
 	// Set up a connection to the server.
-	conn, err := grpc.Dial("localhost:3100", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.Dial("192.168.11.148:3100", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		logger.Error("gRPC did not connect: %v", err)
 	}
@@ -43,7 +43,9 @@ func main() {
 	for {
 		goods, err := hub.GetGoodsCodeReq(context.TODO(), &pb.Empty{})
 		if err != nil {
-			log.Fatal(err)
+			log.Print(err)
+			time.Sleep(10 * time.Second)
+			continue
 		}
 
 		for _, good := range goods.Good {
@@ -123,6 +125,10 @@ func GetFrom1c(gtin string, limit int) ([]code, error) {
 	err = json.Unmarshal(body, &data)
 	if err != nil {
 		return []code{}, err
+	}
+
+	if len(data.Marks) == 0 {
+		return []code{}, fmt.Errorf("Шлюз не дал марки")
 	}
 
 	//Декодируем base64 и перобразуем в коды
