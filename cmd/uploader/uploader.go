@@ -47,8 +47,12 @@ func main() {
 
 	goods := []good{
 		good{
-			Gtin: "00000000000000",
-			Desc: "Test",
+			Gtin: "04607009780054",
+			Desc: "Молоко 3,5%",
+		},
+		good{
+			Gtin: "04607009780870",
+			Desc: "Молоко 2,5%",
 		},
 	}
 
@@ -66,13 +70,13 @@ func main() {
 			code, err := hub.GetCodeForUpload(context.TODO(), &req)
 			if err != nil {
 				logger.Error("err", err)
-				time.Sleep(10 * time.Second)
+				time.Sleep(1 * time.Second)
 				continue
 			}
 
 			if code.GetSerial() == "" {
 				logger.Info("нет кодов на выгрузку")
-				time.Sleep(10 * time.Second)
+				time.Sleep(1 * time.Second)
 				continue
 			}
 
@@ -99,16 +103,10 @@ func main() {
 				continue
 			}
 
-			time.Sleep(2 * time.Second)
+			time.Sleep(500 * time.Millisecond)
 		}
 	}
 
-}
-
-type code struct {
-	Gtin   string
-	Serial string
-	Crypto string
 }
 
 type Marks struct {

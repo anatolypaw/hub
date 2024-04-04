@@ -52,6 +52,7 @@ func (m *MStore) GetCodeForUpload(ctx context.Context, gtin string) (CodeForUplo
 		return CodeForUpload{}, err
 	}
 
+	// Выдаем первую запись, которая не выгружена
 	for _, entry := range code.ProdInfo {
 		if !entry.Uploaded {
 			return CodeForUpload{
