@@ -49,6 +49,10 @@ func main() {
 		}
 
 		for _, good := range goods.Good {
+			if good.Count <= 0 {
+				continue
+			}
+
 			gtin := good.GetGtin()
 
 			codes, err := GetFrom1c(gtin, 5)

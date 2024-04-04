@@ -20,7 +20,6 @@ require (
 )
 
 require (
-	github.com/go-chi/chi v1.5.5
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/google/uuid v1.6.0
 	github.com/klauspost/compress v1.13.6 // indirect
