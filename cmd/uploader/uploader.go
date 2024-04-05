@@ -78,7 +78,7 @@ func main() {
 			code, err := hub.GetCodeForUpload(context.TODO(), &req)
 			if err != nil {
 				logger.Error("err", err)
-				time.Sleep(10 * time.Millisecond)
+				time.Sleep(100 * time.Millisecond)
 				continue
 			}
 
