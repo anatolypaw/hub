@@ -80,9 +80,9 @@ func (m *MStore) GetCodeForPrint(ctx context.Context, gtin, tname, proddate stri
 		return CodeForPrint{}, err
 	}
 
-	// Получаем для него printID из счетчика gtin + ":" + tname + ":" + дата фасовки
+	// Получаем для него printID из счетчика tname + ":" + дата фасовки
 	// Инкрементируем счетчик кодов
-	cname := gtin + ":" + tname + ":" + proddate // год месяц день
+	cname := tname + ":" + proddate // год месяц день
 	filter = bson.M{"_id": cname}
 	update = bson.M{"$inc": bson.M{"value": 1}}
 	opt := options.FindOneAndUpdate().SetUpsert(true)

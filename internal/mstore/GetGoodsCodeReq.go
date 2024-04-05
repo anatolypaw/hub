@@ -35,13 +35,11 @@ func (m *MStore) GetGoodsCodeReq(ctx context.Context) ([]CodeReq, error) {
 		}
 
 		requiredCount := int64(good.StoreCount) - avaibleCount
-		if requiredCount > 0 {
-			codesReq = append(codesReq, CodeReq{
-				Gtin:     good.Gtin,
-				Desc:     good.Desc,
-				Required: requiredCount,
-			})
-		}
+		codesReq = append(codesReq, CodeReq{
+			Gtin:     good.Gtin,
+			Desc:     good.Desc,
+			Required: requiredCount,
+		})
 
 	}
 

@@ -42,6 +42,7 @@ func main() {
 	// Получить продукты, для которых нужно загрузить коды
 	for {
 		goods, err := hub.GetGoodsCodeReq(context.TODO(), &pb.Empty{})
+
 		if err != nil {
 			log.Print(err)
 			time.Sleep(10 * time.Second)
@@ -53,9 +54,10 @@ func main() {
 				continue
 			}
 
+			fmt.Println(good)
 			gtin := good.GetGtin()
 
-			codes, err := GetFrom1c(gtin, 5)
+			codes, err := GetFrom1c(gtin, 50)
 			if err != nil {
 				log.Print(err)
 				time.Sleep(10 * time.Second)

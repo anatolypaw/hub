@@ -54,6 +54,14 @@ func main() {
 			Gtin: "04607009780870",
 			Desc: "Молоко 2,5%",
 		},
+		good{
+			Gtin: "04607009780146",
+			Desc: "Сметана 0.5 20%",
+		},
+		good{
+			Gtin: "04607009780078",
+			Desc: "Кефир пакет 0.5",
+		},
 	}
 
 	// Выгрузка кодов
@@ -70,7 +78,7 @@ func main() {
 			code, err := hub.GetCodeForUpload(context.TODO(), &req)
 			if err != nil {
 				logger.Error("err", err)
-				time.Sleep(1 * time.Second)
+				time.Sleep(10 * time.Millisecond)
 				continue
 			}
 
@@ -103,7 +111,7 @@ func main() {
 				continue
 			}
 
-			time.Sleep(500 * time.Millisecond)
+			time.Sleep(100 * time.Millisecond)
 		}
 	}
 
