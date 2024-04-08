@@ -10,14 +10,14 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-// Отмечает код отбракованным
-func (m *MStore) DiscardBySerial(ctx context.Context, tname string, gtin string, serial string) error {
+// Отмечает код отбракованным по айди напечатанного кода
+func (m *MStore) DiscardByPrintID(ctx context.Context, tname, gtin, proddate string, printid uint32) error {
 	// Логгирование
-	const op = "mstore.DiscardBySerial"
+	const op = "mstore.DiscardByPrintID"
 	logger := m.logger.With("func", op).
 		With("tname", tname).
-		With("gtin", gtin).
-		With("serial", serial)
+		With("proddate", proddate).
+		With("printID", printid)
 
 	var err error
 
@@ -45,21 +45,21 @@ func (m *MStore) DiscardBySerial(ctx context.Context, tname string, gtin string,
 		return err
 	}
 
-	// - Проверить корректность serial
-	err = entity.ValidateSerial(serial)
+	// - Проверить корректность даты и преобразовать в time.Time
+	tdate, err := time.Parse("2006-01-02", proddate) // YYYY-MM-DD
 	if err != nil {
 		return err
 	}
 
 	// Получить код и бд
-	filter := bson.M{"_id": serial}
+	filter := bson.M{"printinfo.printid": printid, "printinfo.tname": tname, "prodinfo.proddate": tdate}
 	collect := m.db.Collection(gtin)
 	reqResult := collect.FindOne(ctx, filter)
 
 	var code entity.FullCode
 	err = reqResult.Decode(&code)
 	if err != nil {
-		err = fmt.Errorf("код не фасован: %s", err)
+		err = fmt.Errorf("код не найден: %s", err)
 		return err
 	}
 
@@ -99,7 +99,7 @@ func (m *MStore) DiscardBySerial(ctx context.Context, tname string, gtin string,
 		Tname:    tname,
 	}
 
-	filter = bson.M{"_id": serial}
+	filter = bson.M{"_id": code.Serial}
 	update := bson.M{"$push": bson.M{
 		"prodinfo": prodInfo,
 	},

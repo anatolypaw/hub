@@ -47,6 +47,12 @@ func (s *server) DiscardBySerial(ctx context.Context, in *pb.DiscardBySerialReq)
 	return &pb.Empty{}, err
 }
 
+// Отбраковывает код по его printID
+func (s *server) DiscardByPrintId(ctx context.Context, in *pb.DiscardByPrintIdReq) (*pb.DiscardByPrintIdResp, error) {
+	err := s.mstore.DiscardByPrintID(ctx, in.Tname, in.Gtin, in.Proddate, in.Printid)
+	return &pb.DiscardByPrintIdResp{}, err
+}
+
 // Возвращает количество произведенных на линии кодов
 func (s *server) GetProducedCount(ctx context.Context, in *pb.GetProducedCountReq) (*pb.GetProducedCountResp, error) {
 	count, err := s.mstore.GetProducedCount(ctx, in.Tname, in.Gtin, in.Date)

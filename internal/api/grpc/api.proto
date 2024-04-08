@@ -8,6 +8,7 @@ service Hub {
     rpc GetCodeForPrint (GetCodeForPrintReq) returns (GetCodeForPrintResp);
     rpc ProducePrinted (ProducePrintedReq) returns (Empty);
     rpc DiscardBySerial(DiscardBySerialReq) returns (Empty);
+    rpc DiscardByPrintId(DiscardByPrintIdReq) returns (DiscardByPrintIdResp);
 
     rpc GetProducedCount (GetProducedCountReq) returns (GetProducedCountResp);
 
@@ -108,4 +109,18 @@ message SetCodeUploadedReq {
     string gtin = 1;
     string serial = 2;
     string entryid = 3;
+}
+
+
+// 
+message DiscardByPrintIdReq{
+    string tname = 1;
+    string gtin = 2;
+    string proddate = 3;
+    uint32 printid = 4;
+
+}
+
+message DiscardByPrintIdResp{
+
 }
