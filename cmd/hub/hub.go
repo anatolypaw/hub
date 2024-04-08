@@ -16,7 +16,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-const version = "1.0.0"
+const version = "2.0.0"
 
 func main() {
 	// Парсим флаги командной строки

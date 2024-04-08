@@ -22,6 +22,7 @@ const (
 	Hub_GetCodeForPrint_FullMethodName  = "/Hub/GetCodeForPrint"
 	Hub_ProducePrinted_FullMethodName   = "/Hub/ProducePrinted"
 	Hub_DiscardBySerial_FullMethodName  = "/Hub/DiscardBySerial"
+	Hub_DiscardByPrintId_FullMethodName = "/Hub/DiscardByPrintId"
 	Hub_GetProducedCount_FullMethodName = "/Hub/GetProducedCount"
 	Hub_AddCodeForPrint_FullMethodName  = "/Hub/AddCodeForPrint"
 	Hub_AddGood_FullMethodName          = "/Hub/AddGood"
@@ -38,6 +39,7 @@ type HubClient interface {
 	GetCodeForPrint(ctx context.Context, in *GetCodeForPrintReq, opts ...grpc.CallOption) (*GetCodeForPrintResp, error)
 	ProducePrinted(ctx context.Context, in *ProducePrintedReq, opts ...grpc.CallOption) (*Empty, error)
 	DiscardBySerial(ctx context.Context, in *DiscardBySerialReq, opts ...grpc.CallOption) (*Empty, error)
+	DiscardByPrintId(ctx context.Context, in *DiscardByPrintIdReq, opts ...grpc.CallOption) (*DiscardByPrintIdResp, error)
 	GetProducedCount(ctx context.Context, in *GetProducedCountReq, opts ...grpc.CallOption) (*GetProducedCountResp, error)
 	// Функции загрузки выгрузки кодов в базу
 	AddCodeForPrint(ctx context.Context, in *AddCodeForPrintReq, opts ...grpc.CallOption) (*Empty, error)
@@ -77,6 +79,15 @@ func (c *hubClient) ProducePrinted(ctx context.Context, in *ProducePrintedReq, o
 func (c *hubClient) DiscardBySerial(ctx context.Context, in *DiscardBySerialReq, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
 	err := c.cc.Invoke(ctx, Hub_DiscardBySerial_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *hubClient) DiscardByPrintId(ctx context.Context, in *DiscardByPrintIdReq, opts ...grpc.CallOption) (*DiscardByPrintIdResp, error) {
+	out := new(DiscardByPrintIdResp)
+	err := c.cc.Invoke(ctx, Hub_DiscardByPrintId_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -145,6 +156,7 @@ type HubServer interface {
 	GetCodeForPrint(context.Context, *GetCodeForPrintReq) (*GetCodeForPrintResp, error)
 	ProducePrinted(context.Context, *ProducePrintedReq) (*Empty, error)
 	DiscardBySerial(context.Context, *DiscardBySerialReq) (*Empty, error)
+	DiscardByPrintId(context.Context, *DiscardByPrintIdReq) (*DiscardByPrintIdResp, error)
 	GetProducedCount(context.Context, *GetProducedCountReq) (*GetProducedCountResp, error)
 	// Функции загрузки выгрузки кодов в базу
 	AddCodeForPrint(context.Context, *AddCodeForPrintReq) (*Empty, error)
@@ -168,6 +180,9 @@ func (UnimplementedHubServer) ProducePrinted(context.Context, *ProducePrintedReq
 }
 func (UnimplementedHubServer) DiscardBySerial(context.Context, *DiscardBySerialReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DiscardBySerial not implemented")
+}
+func (UnimplementedHubServer) DiscardByPrintId(context.Context, *DiscardByPrintIdReq) (*DiscardByPrintIdResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DiscardByPrintId not implemented")
 }
 func (UnimplementedHubServer) GetProducedCount(context.Context, *GetProducedCountReq) (*GetProducedCountResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetProducedCount not implemented")
@@ -250,6 +265,24 @@ func _Hub_DiscardBySerial_Handler(srv interface{}, ctx context.Context, dec func
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(HubServer).DiscardBySerial(ctx, req.(*DiscardBySerialReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Hub_DiscardByPrintId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DiscardByPrintIdReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HubServer).DiscardByPrintId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Hub_DiscardByPrintId_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HubServer).DiscardByPrintId(ctx, req.(*DiscardByPrintIdReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -380,6 +413,10 @@ var Hub_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DiscardBySerial",
 			Handler:    _Hub_DiscardBySerial_Handler,
+		},
+		{
+			MethodName: "DiscardByPrintId",
+			Handler:    _Hub_DiscardByPrintId_Handler,
 		},
 		{
 			MethodName: "GetProducedCount",
