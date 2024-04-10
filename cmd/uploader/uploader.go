@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"log/slog"
 	"net/http"
 	"os"
@@ -39,35 +40,18 @@ func main() {
 
 	hub := pb.NewHubClient(conn)
 
-	// Продукты, которые нужно выгружать
-	type good struct {
-		Gtin string
-		Desc string
-	}
-
-	goods := []good{
-		good{
-			Gtin: "04607009780054",
-			Desc: "Молоко 3,5%",
-		},
-		good{
-			Gtin: "04607009780870",
-			Desc: "Молоко 2,5%",
-		},
-		good{
-			Gtin: "04607009780146",
-			Desc: "Сметана 0.5 20%",
-		},
-		good{
-			Gtin: "04607009780078",
-			Desc: "Кефир пакет 0.5",
-		},
-	}
-
 	// Выгрузка кодов
 	for {
 
-		for _, good := range goods {
+		// Поулчаем все имеющиеся продукты
+		goods, err := hub.GetGoodsCodeReq(context.TODO(), &pb.Empty{})
+		if err != nil {
+			log.Print(err)
+			time.Sleep(10 * time.Second)
+			continue
+		}
+
+		for _, good := range goods.Good {
 			fmt.Printf("Выгрузка для %s %s\n", good.Gtin, good.Desc)
 
 			// Получаем код для выгрузки из хаба

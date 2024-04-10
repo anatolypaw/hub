@@ -45,22 +45,24 @@ func main() {
 
 		if err != nil {
 			log.Print(err)
-			time.Sleep(10 * time.Second)
+			time.Sleep(1 * time.Second)
 			continue
 		}
 
 		for _, good := range goods.Good {
 			if good.Count <= 0 {
+				fmt.Printf("Продукту %s не нужны коды\n", good.Desc)
+				time.Sleep(1 * time.Second)
 				continue
 			}
 
 			fmt.Println(good)
 			gtin := good.GetGtin()
 
-			codes, err := GetFrom1c(gtin, 50)
+			codes, err := GetFrom1c(gtin, 100)
 			if err != nil {
 				log.Print(err)
-				time.Sleep(10 * time.Second)
+				time.Sleep(1 * time.Second)
 				continue
 			}
 
@@ -75,13 +77,13 @@ func main() {
 				_, err = hub.AddCodeForPrint(context.TODO(), &addReq)
 				if err != nil {
 					log.Print(err)
-					time.Sleep(10 * time.Second)
+					time.Sleep(500 * time.Millisecond)
 					continue
 				}
 				fmt.Println("Добавлен ", code)
 
 			}
-			time.Sleep(2 * time.Second)
+			time.Sleep(1 * time.Second)
 		}
 	}
 
