@@ -71,5 +71,15 @@ func (m *MStore) AddGood(ctx context.Context, sname string, gtin string, desc st
 		return err
 	}
 
+	// создаем индекс для коллекции кодов по значению printinfo.printid
+	indexModel3 := mongo.IndexModel{
+		Keys: bson.D{{Key: "printinfo.printid", Value: 1}},
+	}
+
+	_, err = coll.Indexes().CreateOne(context.TODO(), indexModel3)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
