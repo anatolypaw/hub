@@ -81,11 +81,14 @@ func (m *MStore) ProducePrinted(ctx context.Context, tname string, gtin string, 
 	}
 
 	// Проверка, что код уже произведен по данным в последнем элементе лога
+	// Возможна ситуация, что терминал дважды попытается выгрузить код
+	// Такие коды можно найти в базе с двумя подряд отметками о производстве.
+	// Если вернуть ошибку на терминал, то терминал встанет в бесконечную выгрузку этого кода
 	last := len(code.ProdInfo) - 1
 	if last >= 0 {
 		if code.ProdInfo[last].Type == "produce" {
 			err = fmt.Errorf("код уже произведен")
-			return err
+			//	return err
 		}
 	}
 

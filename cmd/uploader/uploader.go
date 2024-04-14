@@ -47,7 +47,7 @@ func main() {
 		goods, err := hub.GetGoodsCodeReq(context.TODO(), &pb.Empty{})
 		if err != nil {
 			log.Print(err)
-			time.Sleep(10 * time.Second)
+			time.Sleep(11 * time.Second)
 			continue
 		}
 
@@ -62,13 +62,6 @@ func main() {
 			code, err := hub.GetCodeForUpload(context.TODO(), &req)
 			if err != nil {
 				logger.Error("err", err)
-				time.Sleep(100 * time.Millisecond)
-				continue
-			}
-
-			if code.GetSerial() == "" {
-				logger.Info("нет кодов на выгрузку")
-				time.Sleep(1 * time.Second)
 				continue
 			}
 
@@ -77,7 +70,7 @@ func main() {
 			err = UploadTo1c(code.Gtin, code.Serial, code.Crypto, code.Proddate, code.Discard)
 			if err != nil {
 				logger.Error("err", err)
-				time.Sleep(10 * time.Second)
+				time.Sleep(1 * time.Second)
 				continue
 			}
 
@@ -91,12 +84,11 @@ func main() {
 			_, err = hub.SetCodeUploaded(context.TODO(), &uploadReq)
 			if err != nil {
 				logger.Error("err", err)
-				time.Sleep(10 * time.Second)
 				continue
 			}
 
-			time.Sleep(100 * time.Millisecond)
 		}
+		time.Sleep(200 * time.Millisecond)
 	}
 
 }
