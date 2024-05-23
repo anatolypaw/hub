@@ -20,7 +20,7 @@ const version = "2.0.2"
 
 func main() {
 	// Парсим флаги командной строки
-	newConfigFlag := flag.Bool("d", false, "создать hub.json конфигурации по умолчанию.")
+	newConfigFlag := flag.Bool("new-config", false, "создать hub.json конфигурации по умолчанию.")
 	flag.Parse()
 
 	/* Настройка логгера */
