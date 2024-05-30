@@ -6,6 +6,7 @@ import (
 	pb "hub/internal/api/grpc/grpcapi"
 	"hub/internal/config"
 	"hub/internal/mstore"
+	"hub/internal/web"
 	"log"
 	"net"
 
@@ -55,11 +56,20 @@ func main() {
 		os.Exit(1)
 	}
 
+	/* Запускаем web интерфейс */
+	webui := web.New()
+	go func() {
+		err := webui.Run(":80")
+		if err != nil {
+			logger.Error(err.Error())
+			os.Exit(1)
+		}
+	}()
+
 	/* Подключение к базе данных */
 	mstore, err := mstore.New(cfg.P.MongoUri, cfg.P.DbName, *logger)
 	if err != nil {
 		logger.Error(err.Error())
-		os.Exit(1)
 	}
 
 	/* Инициализация gRPC сервера */

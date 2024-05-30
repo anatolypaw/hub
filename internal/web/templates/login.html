@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <div class="login-container">
+        <h2>Вход в систему</h2>
+        <form id="loginForm" method="POST" action="/login">
+            <label for="username">Пользователь:</label>
+            <input type="text" id="username" name="username" required>
+            <br>
+            <label for="password">Пароль:</label>
+            <input type="password" id="password" name="password" required>
+            <br>
+            <input type="submit" value="Войти">
+        </form>
+    </div>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+            var credentials = btoa(username + ':' + password);
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Basic ' + credentials
+                }
+            }).then(response => {
+                if (response.ok) {
+                    window.location.href = '/';
+                } else {
+                    alert('Неверный логин или пароль');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
