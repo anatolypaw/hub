@@ -1,4 +1,5 @@
 .DS_Store
 cmd/loader
 cmd/uploader
+cmd/hub/hub
 ci
