@@ -1,4 +1,0 @@
-{
-    "MongoUri": "mongodb://localhost:27017/",
-    "DbName": "molocode"
-}

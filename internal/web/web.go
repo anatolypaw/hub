@@ -1,6 +1,7 @@
 package web
 
 import (
+	"embed"
 	"hub/internal/web/authservice"
 	"hub/internal/web/handlers"
 	"hub/internal/web/mware"
@@ -20,9 +21,15 @@ type App struct {
 	auth   *authservice.Auth
 }
 
+// Встроим все статические файлы веб сервера в бинарник
+//
+//go:embed static/*
+var staticContent embed.FS
+
 func New() *App {
 	auth := authservice.New()
 
+	// Добавляет пользователей и права
 	auth.AddUser("admin", "admin", "admin")
 	auth.AddUser("user", "user", "user")
 
@@ -44,13 +51,13 @@ func New() *App {
 	r.Group(func(r chi.Router) {
 		r.Use(mware.ChekAuth(&auth, "admin", "user"))
 
-		r.Get("/", handlers.MainForm)
+		r.Get("/", handlers.Index)
+		r.Get("/index.html", handlers.Index)
 	})
 
 	// Для всех
 	r.Group(func(r chi.Router) {
-		fs := http.FileServer(http.Dir("static"))
-		r.Handle("/static/*", http.StripPrefix("/static/", fs))
+		r.Handle("/static/*", http.FileServer(http.FS(staticContent)))
 
 		r.Get("/login", handlers.LoginForm)
 		r.Post("/login", handlers.Login(&auth))

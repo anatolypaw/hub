@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-var loginTemplate = template.Must(template.ParseFiles("templates/login.html"))
+var loginTemplate = template.Must(template.ParseFS(templates, "templates/login.html"))
 
 // Форма аутентификации
 func LoginForm(w http.ResponseWriter, r *http.Request) {
@@ -22,14 +22,12 @@ type IAuth interface {
 // Аутентификация, возвращает sessionid в браузер в случае успеха
 func Login(auth IAuth) http.HandlerFunc {
 	fn := func(w http.ResponseWriter, r *http.Request) {
-		username, password, ok := r.BasicAuth()
-		if !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-			return
-		}
+		username := r.FormValue("username")
+		password := r.FormValue("password")
 
 		sessionID, err := auth.Login(username, password)
 		if err != nil {
+			w.Write([]byte("Неверный логин или пароль"))
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
@@ -42,7 +40,8 @@ func Login(auth IAuth) http.HandlerFunc {
 			Expires: time.Now().Add(24 * time.Hour),
 		})
 
-		//http.Redirect(w, r, "/", http.StatusMovedPermanently)
+		w.Header().Set("HX-Redirect", "/")
+		//w.Write([]byte("<p>Login successful!</p>"))
 		w.WriteHeader(http.StatusOK)
 	}
 

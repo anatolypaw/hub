@@ -10,6 +10,11 @@ import (
 func ChekAuth(auth *authservice.Auth, permission ...string) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		fn := func(w http.ResponseWriter, r *http.Request) {
+
+			// Отключена проверка авторизации
+			next.ServeHTTP(w, r)
+			return
+
 			cookie, err := r.Cookie("session_id")
 			if err != nil {
 				// http.Error(w, authservice.ErrNotAuthorized.Error(), http.StatusUnauthorized)
