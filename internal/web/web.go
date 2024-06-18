@@ -23,7 +23,7 @@ type App struct {
 
 // Встроим все статические файлы веб сервера в бинарник
 //
-//go:embed static/*
+//go:embed static
 var staticContent embed.FS
 
 func New() *App {
@@ -43,7 +43,8 @@ func New() *App {
 	r.Group(func(r chi.Router) {
 		r.Use(mware.ChekAuth(&auth, "admin"))
 
-		r.Mount("/debug", middleware.Profiler())
+		r.Mount("/profiler", middleware.Profiler())
+		r.Get("/debug", handlers.Debug)
 
 	})
 

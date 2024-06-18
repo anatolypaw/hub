@@ -9,17 +9,24 @@
     <script src="/static/htmx.min.js"></script>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            display: flex;
             font-family: sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
         }
 
         .login-container {
+            min-width: 100px;
+            max-width: 300px;
             padding: 20px;
             border-radius: 5px;
             border: 1px solid #ddd;
-            width: 300px;
-            margin: 7em auto;
             background-color: #fff;
         }
 
@@ -27,11 +34,11 @@
         .login-container button {
             width: 100%;
             padding: 10px;
-            margin: 5px 0;
+            margin-bottom: 10px;
+
             border-radius: 5px;
             border: 1px solid #ddd;
             font-size: 16px;
-            box-sizing: border-box;
         }
 
         .login-container button {
@@ -57,10 +64,8 @@
         <form hx-post="/login" hx-target="#result" hx-swap="innerHTML">
             <input placeholder="Логин" onFocus="this.placeholder='';" onBlur="this.placeholder='Логин';" type="text"
                 id="username" name="username" required>
-            <br>
             <input placeholder="Пароль" onFocus="this.placeholder='';" onBlur="this.placeholder='Пароль';"
                 type="password" id="password" name="password" required>
-            <br>
             <button value="Войти" type="submit">Войти</button>
         </form>
         <div id="result"></div>
