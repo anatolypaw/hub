@@ -29,6 +29,7 @@ const (
 	Hub_GetGoodsCodeReq_FullMethodName  = "/Hub/GetGoodsCodeReq"
 	Hub_GetCodeForUpload_FullMethodName = "/Hub/GetCodeForUpload"
 	Hub_SetCodeUploaded_FullMethodName  = "/Hub/SetCodeUploaded"
+	Hub_GetCodeByID_FullMethodName      = "/Hub/GetCodeByID"
 )
 
 // HubClient is the client API for Hub service.
@@ -48,6 +49,7 @@ type HubClient interface {
 	GetGoodsCodeReq(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*GetGoodsCodeResp, error)
 	GetCodeForUpload(ctx context.Context, in *GetCodeForUploadReq, opts ...grpc.CallOption) (*GetCodeForUploadResp, error)
 	SetCodeUploaded(ctx context.Context, in *SetCodeUploadedReq, opts ...grpc.CallOption) (*Empty, error)
+	GetCodeByID(ctx context.Context, in *GetCodeByIDReq, opts ...grpc.CallOption) (*GetCodeByIDResp, error)
 }
 
 type hubClient struct {
@@ -148,6 +150,15 @@ func (c *hubClient) SetCodeUploaded(ctx context.Context, in *SetCodeUploadedReq,
 	return out, nil
 }
 
+func (c *hubClient) GetCodeByID(ctx context.Context, in *GetCodeByIDReq, opts ...grpc.CallOption) (*GetCodeByIDResp, error) {
+	out := new(GetCodeByIDResp)
+	err := c.cc.Invoke(ctx, Hub_GetCodeByID_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // HubServer is the server API for Hub service.
 // All implementations must embed UnimplementedHubServer
 // for forward compatibility
@@ -165,6 +176,7 @@ type HubServer interface {
 	GetGoodsCodeReq(context.Context, *Empty) (*GetGoodsCodeResp, error)
 	GetCodeForUpload(context.Context, *GetCodeForUploadReq) (*GetCodeForUploadResp, error)
 	SetCodeUploaded(context.Context, *SetCodeUploadedReq) (*Empty, error)
+	GetCodeByID(context.Context, *GetCodeByIDReq) (*GetCodeByIDResp, error)
 	mustEmbedUnimplementedHubServer()
 }
 
@@ -201,6 +213,9 @@ func (UnimplementedHubServer) GetCodeForUpload(context.Context, *GetCodeForUploa
 }
 func (UnimplementedHubServer) SetCodeUploaded(context.Context, *SetCodeUploadedReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetCodeUploaded not implemented")
+}
+func (UnimplementedHubServer) GetCodeByID(context.Context, *GetCodeByIDReq) (*GetCodeByIDResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCodeByID not implemented")
 }
 func (UnimplementedHubServer) mustEmbedUnimplementedHubServer() {}
 
@@ -395,6 +410,24 @@ func _Hub_SetCodeUploaded_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Hub_GetCodeByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCodeByIDReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HubServer).GetCodeByID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Hub_GetCodeByID_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HubServer).GetCodeByID(ctx, req.(*GetCodeByIDReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Hub_ServiceDesc is the grpc.ServiceDesc for Hub service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -441,6 +474,10 @@ var Hub_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SetCodeUploaded",
 			Handler:    _Hub_SetCodeUploaded_Handler,
+		},
+		{
+			MethodName: "GetCodeByID",
+			Handler:    _Hub_GetCodeByID_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
