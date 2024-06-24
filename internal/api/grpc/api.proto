@@ -20,6 +20,7 @@ service Hub {
     rpc GetGoodsCodeReq(Empty) returns (GetGoodsCodeResp);
     rpc GetCodeForUpload(GetCodeForUploadReq) returns (GetCodeForUploadResp);   
     rpc SetCodeUploaded(SetCodeUploadedReq) returns (Empty);
+    rpc GetCodeByID(GetCodeByIDReq) returns (GetCodeByIDResp);
 }
 
 message Empty {}
@@ -96,6 +97,7 @@ message GetCodeForUploadReq {
     string gtin = 1;
 }
 
+// Возвращает код на выгрузку в 1с
 message GetCodeForUploadResp {
     string gtin = 1;
     string serial = 2;
@@ -105,6 +107,7 @@ message GetCodeForUploadResp {
     bool discard = 6;
 }
 
+// Устанавливает флаг, что код был выгружен в 1с
 message SetCodeUploadedReq {
     string gtin = 1;
     string serial = 2;
@@ -112,7 +115,7 @@ message SetCodeUploadedReq {
 }
 
 
-// 
+// Отбраковывает код по его айди
 message DiscardByPrintIdReq{
     string tname = 1;
     string gtin = 2;
@@ -123,4 +126,17 @@ message DiscardByPrintIdReq{
 
 message DiscardByPrintIdResp{
 
+}
+
+
+// Возвращает код маркировки по его айди
+message GetCodeByIDReq{
+    string tname = 1;
+    string gtin = 2;
+    string proddate = 3;
+    uint32 printid = 4;
+}
+
+message GetCodeByIDResp {
+    string code = 1;
 }
