@@ -93,6 +93,9 @@ func (s *server) GetGoodsCodeReq(ctx context.Context, in *pb.Empty) (*pb.GetGood
 // Возвращает код на выгрузку
 func (s *server) GetCodeForUpload(ctx context.Context, in *pb.GetCodeForUploadReq) (*pb.GetCodeForUploadResp, error) {
 	code, err := s.mstore.GetCodeForUpload(ctx, in.Gtin)
+	if err != nil {
+		return &pb.GetCodeForUploadResp{}, err
+	}
 
 	return &pb.GetCodeForUploadResp{
 		Gtin:     code.Gtin,
