@@ -2,6 +2,7 @@ package grpcapi
 
 import (
 	"context"
+	"fmt"
 	pb "hub/internal/api/grpc/grpcapi"
 	"hub/internal/mstore"
 )
@@ -110,4 +111,19 @@ func (s *server) GetCodeForUpload(ctx context.Context, in *pb.GetCodeForUploadRe
 // Устанавливает код выгруженным
 func (s *server) SetCodeUploaded(ctx context.Context, in *pb.SetCodeUploadedReq) (*pb.Empty, error) {
 	return &pb.Empty{}, s.mstore.SetCodeUploaded(ctx, in.Gtin, in.Serial, in.Entryid)
+}
+
+// Возвращает код по его ID печати
+func (s *server) GetCodeByID(ctx context.Context, in *pb.GetCodeByIDReq) (*pb.GetCodeByIDResp, error) {
+	code, err := s.mstore.GetCodeByPrintID(ctx, in.Tname, in.Gtin, in.Proddate, in.Printid)
+	if err != nil {
+		return &pb.GetCodeByIDResp{}, err
+	}
+
+	c := fmt.Sprint("01", code.Gtin, "21", code.Serial, "\\F", "93", code.Crypto)
+	fmt.Println(c)
+	return &pb.GetCodeByIDResp{
+		Code: c,
+	}, nil
+
 }
