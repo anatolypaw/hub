@@ -1,70 +1,54 @@
 {{ define "body" }}
-<div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px;">
-    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-        <svg class="bi me-2" width="40" height="32">
-            <use xlink:href="#bootstrap"></use>
-        </svg>
-        <span class="fs-4">Боковая панель</span>
-    </a>
-    <hr>
-    <ul class="nav nav-pills flex-column mb-auto">
-        <li class="nav-item">
-            <a href="#" class="nav-link active" aria-current="page">
-                <svg class="bi me-2" width="16" height="16">
-                    <use xlink:href="#home"></use>
-                </svg>
-                Главная
-            </a>
-        </li>
-        <li>
-            <a href="#" class="nav-link text-white">
-                <svg class="bi me-2" width="16" height="16">
-                    <use xlink:href="#speedometer2"></use>
-                </svg>
-                Панель
-            </a>
-        </li>
-        <li>
-            <a href="#" class="nav-link text-white">
-                <svg class="bi me-2" width="16" height="16">
-                    <use xlink:href="#table"></use>
-                </svg>
-                Заказы
-            </a>
-        </li>
-        <li>
-            <a href="#" class="nav-link text-white">
-                <svg class="bi me-2" width="16" height="16">
-                    <use xlink:href="#grid"></use>
-                </svg>
-                Продукты
-            </a>
-        </li>
-        <li>
-            <a href="#" class="nav-link text-white">
-                <svg class="bi me-2" width="16" height="16">
-                    <use xlink:href="#people-circle"></use>
-                </svg>
-                Клиенты
-            </a>
-        </li>
-    </ul>
-    <hr>
-    <div class="dropdown">
-        <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1"
-            data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
-            <strong>mdo</strong>
+<style>
+    aside {
+        margin-top: 56px;
+        width: 180px;
+    }
+
+    .nav-link {
+        color: #aaa
+    }
+
+    .nav-link:hover {
+        color: #fff;
+    }
+
+    main {
+        /* Высота фиксированного заголовка */
+        margin-top: 56px;
+
+        /* Ширина фиксированной боковой панели */
+        padding-left: 180px;
+    }
+
+    #content {
+        width: 100%;
+        height: 100%;
+    }
+</style>
+
+<header class="bg-dark p-3 fixed-top">
+    <div class="ps-3">
+        <a class="nav-link text-white d-flex align-items-center" href="/">
+            <img src="/static/dm-logo.png">
+            <span class="ps-3 h4 mb-0">Молокод</span>
         </a>
-        <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
-            <li><a class="dropdown-item" href="#">Новый проект...</a></li>
-            <li><a class="dropdown-item" href="#">Настройка</a></li>
-            <li><a class="dropdown-item" href="#">Профиль</a></li>
-            <li>
-                <hr class="dropdown-divider">
-            </li>
-            <li><a class="dropdown-item" href="#">Выйти</a></li>
-        </ul>
     </div>
-</div>
+</header>
+
+
+<aside class="bg-dark p-3 min-vh-100 fixed-top">
+    <nav class="nav flex-column">
+        <a class="nav-link" href="">Продукты</a>
+        <a class="nav-link" href="">АРМ</a>
+        <a class="nav-link" href="">Настройки</a>
+        <a class="nav-link" hx-get="/debug" href="" hx-target="#content" hx-swap="innerHTML">Отладка</a>
+        <a class="nav-link" href="">Помощь</a>
+    </nav>
+</aside>
+<main>
+    <div class="p-3" id="content"></div>
+</main>
+
+
 {{ end }}

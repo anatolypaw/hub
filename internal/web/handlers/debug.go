@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-var debugTemplate = template.Must(template.ParseFS(templates, "templates/layout.html", "templates/debug.html"))
+var debugTemplate = template.Must(template.ParseFS(templates, "templates/debug.html"))
 
 // Форма аутентификации
 func Debug(w http.ResponseWriter, r *http.Request) {
