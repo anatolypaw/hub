@@ -7,10 +7,10 @@ import (
 	"time"
 )
 
-var loginTemplate = template.Must(template.ParseFS(templates, "templates/login.html"))
+var loginTemplate = template.Must(template.ParseFS(templates, "templates/layout.html", "templates/login.html"))
 
 // Форма аутентификации
-func LoginForm(w http.ResponseWriter, r *http.Request) {
+func LoginGet(w http.ResponseWriter, r *http.Request) {
 	loginTemplate.Execute(w, nil)
 }
 
@@ -20,14 +20,14 @@ type IAuth interface {
 }
 
 // Аутентификация, возвращает sessionid в браузер в случае успеха
-func Login(auth IAuth) http.HandlerFunc {
+func LoginPost(auth IAuth) http.HandlerFunc {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		username := r.FormValue("username")
 		password := r.FormValue("password")
 
 		sessionID, err := auth.Login(username, password)
 		if err != nil {
-			w.Write([]byte("Неверный логин или пароль"))
+			w.Write([]byte("<div class=\"alert alert-warning\" role=\"alert\">Неверный логин или пароль</div>"))
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}

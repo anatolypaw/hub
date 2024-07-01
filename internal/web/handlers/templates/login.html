@@ -1,75 +1,21 @@
-<!DOCTYPE html>
-<html lang="ru">
+{{ define "body" }}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <h3 class="text-center mb-2">Молокод</h3>
+            <h5 class="text-center mb-3">Вход в систему</h5>
+            <form hx-post="/login" hx-target="#result" hx-swap="innerHTML">
+                <div>
+                    <input type="text" class="form-control mb-3" name="username" placeholder="Логин" required>
+                </div>
+                <div>
+                    <input type="password" class="form-control mb-3" name="password" placeholder="Пароль" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 mb-3">Войти</button>
+                <div id="result"></div>
+            </form>
 
-<head>
-    <meta charset="UTF-8">
-    <title>Молокод</title>
-
-    <link rel="icon" href="/static/favicon.png">
-    <script src="/static/htmx.min.js"></script>
-
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 80vh;
-        }
-
-        .login-container {
-            min-width: 100px;
-            max-width: 300px;
-            padding: 20px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-            background-color: #fff;
-        }
-
-        .login-container input,
-        .login-container button {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-
-            border-radius: 5px;
-            border: 1px solid #ddd;
-            font-size: 16px;
-        }
-
-        .login-container button {
-            background-color: #38aedd;
-            color: white;
-            cursor: pointer;
-        }
-
-        .login-container button:hover {
-            background-color: #34a4d0;
-        }
-
-        #result {
-            color: #2f2f2f;
-            margin-top: 10px;
-            text-align: center;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="login-container">
-        <form hx-post="/login" hx-target="#result" hx-swap="innerHTML">
-            <input placeholder="Логин" onFocus="this.placeholder='';" onBlur="this.placeholder='Логин';" type="text"
-                id="username" name="username" required>
-            <input placeholder="Пароль" onFocus="this.placeholder='';" onBlur="this.placeholder='Пароль';"
-                type="password" id="password" name="password" required>
-            <button value="Войти" type="submit">Войти</button>
-        </form>
-        <div id="result"></div>
+        </div>
     </div>
-</body>
-
-</html>
+</div>
+{{ end }}

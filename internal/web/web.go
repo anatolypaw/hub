@@ -27,11 +27,11 @@ type App struct {
 var staticContent embed.FS
 
 func New() *App {
-	auth := authservice.New()
+	authService := authservice.New()
 
 	// Добавляет пользователей и права
-	auth.AddUser("admin", "admin", "admin")
-	auth.AddUser("user", "user", "user")
+	authService.AddUser("admin", "admin", "admin")
+	authService.AddUser("user", "user", "user")
 
 	r := chi.NewRouter()
 
@@ -41,7 +41,7 @@ func New() *App {
 
 	// Админские страницы
 	r.Group(func(r chi.Router) {
-		r.Use(mware.ChekAuth(&auth, "admin"))
+		r.Use(mware.ChekAuth(&authService, "admin"))
 
 		r.Mount("/profiler", middleware.Profiler())
 		r.Get("/debug", handlers.Debug)
@@ -50,7 +50,7 @@ func New() *App {
 
 	// Для пользователей
 	r.Group(func(r chi.Router) {
-		r.Use(mware.ChekAuth(&auth, "admin", "user"))
+		r.Use(mware.ChekAuth(&authService, "admin", "user"))
 
 		r.Get("/", handlers.Index)
 		r.Get("/index.html", handlers.Index)
@@ -60,13 +60,13 @@ func New() *App {
 	r.Group(func(r chi.Router) {
 		r.Handle("/static/*", http.FileServer(http.FS(staticContent)))
 
-		r.Get("/login", handlers.LoginForm)
-		r.Post("/login", handlers.Login(&auth))
+		r.Get("/login", handlers.LoginGet)
+		r.Post("/login", handlers.LoginPost(&authService))
 	})
 
 	return &App{
 		chiMux: r,
-		auth:   &auth,
+		auth:   &authService,
 	}
 }
 
