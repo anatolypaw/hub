@@ -27,19 +27,22 @@
     }
 </style>
 
-<header class="bg-dark p-3 fixed-top">
+<header class="bg-dark p-3 fixed-top d-flex align-items-center">
     <div class="ps-3">
         <a class="nav-link text-white d-flex align-items-center" href="/">
             <img src="/static/dm-logo.png">
             <span class="ps-3 h4 mb-0">Молокод</span>
         </a>
     </div>
+    <div class="ps-3 text-white ms-auto">
+        <a class="nav-link" href="/login">Выход</a>
+    </div>
 </header>
 
 
 <aside class="bg-dark p-3 min-vh-100 fixed-top">
     <nav class="nav flex-column">
-        <a class="nav-link" href="">Продукты</a>
+        <a class="nav-link" hx-get="/goods" href="" hx-target="#content" hx-swap="innerHTML">Продукты</a>
         <a class="nav-link" href="">АРМ</a>
         <a class="nav-link" href="">Настройки</a>
         <a class="nav-link" hx-get="/debug" href="" hx-target="#content" hx-swap="innerHTML">Отладка</a>
@@ -49,6 +52,5 @@
 <main>
     <div class="p-3" id="content"></div>
 </main>
-
 
 {{ end }}

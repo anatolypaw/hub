@@ -2,7 +2,6 @@ package mstore
 
 import (
 	"context"
-	"fmt"
 	"log/slog"
 	"sync"
 	"time"
@@ -37,13 +36,13 @@ func New(path string, dbname string, logger slog.Logger) (*MStore, error) {
 
 	client, err := mongo.Connect(context.TODO(), opts)
 	if err != nil {
-		return nil, fmt.Errorf("%s: %w", op, err)
+		logger.Error("func", op, err)
 	}
 
 	// Проверка подключения к базе
 	err = client.Ping(context.TODO(), nil)
 	if err != nil {
-		return nil, fmt.Errorf("%s: %w", op, err)
+		logger.Error("func", op, err)
 	}
 
 	con := MStore{

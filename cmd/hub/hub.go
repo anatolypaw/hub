@@ -56,8 +56,14 @@ func main() {
 		os.Exit(1)
 	}
 
+	/* Подключение к базе данных */
+	mstore, err := mstore.New(cfg.P.MongoUri, cfg.P.DbName, *logger)
+	if err != nil {
+		logger.Error(err.Error())
+	}
+
 	/* Запускаем web интерфейс */
-	webui := web.New()
+	webui := web.New(mstore)
 	go func() {
 		err := webui.Run(":80")
 		if err != nil {
@@ -65,12 +71,6 @@ func main() {
 			os.Exit(1)
 		}
 	}()
-
-	/* Подключение к базе данных */
-	mstore, err := mstore.New(cfg.P.MongoUri, cfg.P.DbName, *logger)
-	if err != nil {
-		logger.Error(err.Error())
-	}
 
 	/* Инициализация gRPC сервера */
 	lis, err := net.Listen("tcp", ":3100")

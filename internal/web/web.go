@@ -2,6 +2,7 @@ package web
 
 import (
 	"embed"
+	"hub/internal/mstore"
 	"hub/internal/web/authservice"
 	"hub/internal/web/handlers"
 	"hub/internal/web/mware"
@@ -19,6 +20,7 @@ type User struct {
 type App struct {
 	chiMux *chi.Mux
 	auth   *authservice.Auth
+	mstore *mstore.MStore
 }
 
 // Встроим все статические файлы веб сервера в бинарник
@@ -26,7 +28,7 @@ type App struct {
 //go:embed static
 var staticContent embed.FS
 
-func New() *App {
+func New(mstore *mstore.MStore) *App {
 	authService := authservice.New()
 
 	// Добавляет пользователей и права
@@ -53,7 +55,8 @@ func New() *App {
 		r.Use(mware.ChekAuth(&authService, "admin", "user"))
 
 		r.Get("/", handlers.Index)
-		r.Get("/index.html", handlers.Index)
+		r.Get("/index", handlers.Index)
+		r.Get("/goods", handlers.GoodsGet(mstore))
 	})
 
 	// Для всех
@@ -67,6 +70,7 @@ func New() *App {
 	return &App{
 		chiMux: r,
 		auth:   &authService,
+		mstore: mstore,
 	}
 }
 
