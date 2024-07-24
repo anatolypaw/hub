@@ -6,6 +6,8 @@ import (
 	"hub/internal/web/authservice"
 	"hub/internal/web/handlers"
 	"hub/internal/web/mware"
+	"io/fs"
+	"log"
 	"net/http"
 
 	"github.com/go-chi/chi"
@@ -23,12 +25,17 @@ type App struct {
 	mstore *mstore.MStore
 }
 
-// Встроим все статические файлы веб сервера в бинарник
 //
-//go:embed static
-var staticContent embed.FS
+//go:embed all:webpanel/dist
+var fsys embed.FS
 
 func New(mstore *mstore.MStore) *App {
+	reactAppFolder, err := fs.Sub(fsys, "webpanel/dist")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fileServer := http.FileServerFS(reactAppFolder)
+
 	authService := authservice.New()
 
 	// Добавляет пользователей и права
@@ -36,35 +43,28 @@ func New(mstore *mstore.MStore) *App {
 	authService.AddUser("user", "user", "user")
 
 	r := chi.NewRouter()
-
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
-	r.Use(middleware.NoCache)
 
-	// Админские страницы
+	// Для всех
+	r.Group(func(r chi.Router) {
+		r.Handle("/*", fileServer)
+	})
+
+	// Только для админов
 	r.Group(func(r chi.Router) {
 		r.Use(mware.ChekAuth(&authService, "admin"))
 
 		r.Mount("/profiler", middleware.Profiler())
 		r.Get("/debug", handlers.Debug)
 
+		r.Get("/api/index", handlers.Index)
+		r.Get("/api/goods", handlers.GoodsGet(mstore))
 	})
 
-	// Для пользователей
+	// Для пользователей и админов
 	r.Group(func(r chi.Router) {
 		r.Use(mware.ChekAuth(&authService, "admin", "user"))
-
-		r.Get("/", handlers.Index)
-		r.Get("/index", handlers.Index)
-		r.Get("/goods", handlers.GoodsGet(mstore))
-	})
-
-	// Для всех
-	r.Group(func(r chi.Router) {
-		r.Handle("/static/*", http.FileServer(http.FS(staticContent)))
-
-		r.Get("/login", handlers.LoginGet)
-		r.Post("/login", handlers.LoginPost(&authService))
 	})
 
 	return &App{
