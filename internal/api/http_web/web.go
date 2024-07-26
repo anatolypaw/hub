@@ -1,11 +1,11 @@
-package web
+package http_web
 
 import (
 	"embed"
+	"hub/internal/api/http_web/authservice"
+	"hub/internal/api/http_web/handlers"
+	"hub/internal/api/http_web/mware"
 	"hub/internal/mstore"
-	"hub/internal/web/authservice"
-	"hub/internal/web/handlers"
-	"hub/internal/web/mware"
 	"io/fs"
 	"log"
 	"net/http"

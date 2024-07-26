@@ -1,7 +1,7 @@
 package mware
 
 import (
-	"hub/internal/web/authservice"
+	"hub/internal/api/http_web/authservice"
 	"log"
 	"net/http"
 )

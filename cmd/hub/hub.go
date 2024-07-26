@@ -4,9 +4,9 @@ import (
 	"flag"
 	grpcapi "hub/internal/api/grpc"
 	pb "hub/internal/api/grpc/grpcapi"
+	"hub/internal/api/http_web"
 	"hub/internal/config"
 	"hub/internal/mstore"
-	"hub/internal/web"
 	"log"
 	"net"
 
@@ -63,7 +63,7 @@ func main() {
 	}
 
 	/* Запускаем web интерфейс */
-	webui := web.New(mstore)
+	webui := http_web.New(mstore)
 	go func() {
 		err := webui.Run(":80")
 		if err != nil {

@@ -1,0 +1,29 @@
+<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="100" height="100" fill="#ffffff"/>
+
+  <!-- Data Matrix Code (simplified example) -->
+  <!-- Row 1 -->
+  <rect x="10" y="10" width="10" height="10" fill="#000000"/>
+  <rect x="30" y="10" width="10" height="10" fill="#000000"/>
+  <rect x="50" y="10" width="10" height="10" fill="#000000"/>
+  <rect x="70" y="10" width="10" height="10" fill="#000000"/>
+
+  <!-- Row 2 -->
+  <rect x="10" y="30" width="10" height="10" fill="#000000"/>
+  <rect x="30" y="30" width="10" height="10" fill="#000000"/>
+  <rect x="50" y="30" width="10" height="10" fill="#000000"/>
+  <rect x="70" y="30" width="10" height="10" fill="#000000"/>
+
+  <!-- Row 3 -->
+  <rect x="10" y="50" width="10" height="10" fill="#000000"/>
+  <rect x="30" y="50" width="10" height="10" fill="#000000"/>
+  <rect x="50" y="50" width="10" height="10" fill="#000000"/>
+  <rect x="70" y="50" width="10" height="10" fill="#000000"/>
+
+  <!-- Row 4 -->
+  <rect x="10" y="70" width="10" height="10" fill="#000000"/>
+  <rect x="30" y="70" width="10" height="10" fill="#000000"/>
+  <rect x="50" y="70" width="10" height="10" fill="#000000"/>
+  <rect x="70" y="70" width="10" height="10" fill="#000000"/>
+</svg>
