@@ -3,7 +3,6 @@ package http_web
 import (
 	"embed"
 	"hub/internal/api/http_web/authservice"
-	"hub/internal/api/http_web/handlers"
 	"hub/internal/api/http_web/mware"
 	"hub/internal/mstore"
 	"io/fs"
@@ -26,11 +25,11 @@ type App struct {
 }
 
 //
-//go:embed all:webpanel/dist
+//go:embed all:webpanel/public
 var fsys embed.FS
 
 func New(mstore *mstore.MStore) *App {
-	reactAppFolder, err := fs.Sub(fsys, "webpanel/dist")
+	reactAppFolder, err := fs.Sub(fsys, "webpanel/public")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -43,12 +42,21 @@ func New(mstore *mstore.MStore) *App {
 	authService.AddUser("user", "user", "user")
 
 	r := chi.NewRouter()
+	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, "/", http.StatusMovedPermanently)
+	})
+
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
-	// Для всех
+	// Доступно для всех
 	r.Group(func(r chi.Router) {
 		r.Handle("/*", fileServer)
+	})
+
+	// Для авторизованных пользователей
+	r.Group(func(r chi.Router) {
+		r.Use(mware.ChekAuth(&authService, "admin", "user"))
 	})
 
 	// Только для админов
@@ -56,15 +64,7 @@ func New(mstore *mstore.MStore) *App {
 		r.Use(mware.ChekAuth(&authService, "admin"))
 
 		r.Mount("/profiler", middleware.Profiler())
-		r.Get("/debug", handlers.Debug)
 
-		r.Get("/api/index", handlers.Index)
-		r.Get("/api/goods", handlers.GoodsGet(mstore))
-	})
-
-	// Для пользователей и админов
-	r.Group(func(r chi.Router) {
-		r.Use(mware.ChekAuth(&authService, "admin", "user"))
 	})
 
 	return &App{

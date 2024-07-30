@@ -1,31 +1,29 @@
+import React from "react";
+import { Link } from "gatsby";
+
 export default function LeftMenu() {
     return (
-        <nav className="bg-white shadow-md w-52 p-2">
+        <nav className="bg-white w-48 border-r border-gray-500">
             <ul>
-                <li className="mb-2">
-                    <a href="/c1" className="text-gray-700 hover:bg-blue-100 block py-2 px-4 rounded">
+                <li>
+                    <Link to="c1" className="hover:bg-gray-200 block py-2 px-4">
                         Главная
-                    </a>
+                    </Link>
                 </li>
-                <li className="mb-2">
-                    <a href="/c2" className="text-gray-700 hover:bg-blue-100 block py-2 px-4 rounded">
+                <li>
+                    <Link to="t2" className="hover:bg-gray-200 block py-2 px-4">
                         О нас
-                    </a>
+                    </Link>
                 </li>
-                <li className="mb-2">
-                    <a href="/c3" className="text-gray-700 hover:bg-blue-100 block py-2 px-4 rounded">
-                        Услуги
-                    </a>
-                </li>
-                <li className="mb-2">
-                    <a href="/login" className="text-gray-700 hover:bg-blue-100 block py-2 px-4 rounded">
-                        Контакты
-                    </a>
-                </li>
-                <li className="mb-2">
-                    <a href="#" className="text-gray-700 hover:bg-blue-100 block py-2 px-4 rounded">
+                <li >
+                    <Link to="#" className="hover:bg-gray-200 block py-2 px-4">
                         Блог
-                    </a>
+                    </Link>
+                </li>
+                <li >
+                    <Link to="login" className="hover:bg-gray-200 block py-2 px-4">
+                        Логин
+                    </Link>
                 </li>
             </ul>
         </nav>

@@ -1,17 +1,14 @@
 package handlers
 
 import (
-	"html/template"
 	"log"
 	"net/http"
 	"time"
 )
 
-var loginTemplate = template.Must(template.ParseFS(templates, "templates/layout.html", "templates/login.html"))
-
 // Форма аутентификации
 func LoginGet(w http.ResponseWriter, r *http.Request) {
-	loginTemplate.Execute(w, nil)
+	// loginTemplate.Execute(w, nil)
 }
 
 // Сервис аутентификации
