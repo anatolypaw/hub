@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	ErrInvalidCredentials = errors.New("invalid credentials")
+	ErrInvalidCredentials = errors.New("неверный логин/пароль")
 	ErrNotAuthorized      = errors.New("not authorized")
 	ErrNoPermission       = errors.New("no permission")
 )

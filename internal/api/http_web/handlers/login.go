@@ -1,14 +1,20 @@
 package handlers
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
-	"time"
 )
 
-// Форма аутентификации
-func LoginGet(w http.ResponseWriter, r *http.Request) {
-	// loginTemplate.Execute(w, nil)
+type creds struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+// json ответ на запрос авторизации
+type resp struct {
+	Message   string `json:"message"`
+	AuthToken string `json:"authToken"`
 }
 
 // Сервис аутентификации
@@ -17,30 +23,47 @@ type IAuth interface {
 }
 
 // Аутентификация, возвращает sessionid в браузер в случае успеха
-func LoginPost(auth IAuth) http.HandlerFunc {
-	fn := func(w http.ResponseWriter, r *http.Request) {
-		username := r.FormValue("username")
-		password := r.FormValue("password")
+func Login(auth IAuth) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 
-		sessionID, err := auth.Login(username, password)
+		// Считываем логин и пароль из запроса
+		var c creds
+		err := json.NewDecoder(r.Body).Decode(&c)
 		if err != nil {
-			w.Write([]byte("<div class=\"alert alert-warning\" role=\"alert\">Неверный логин или пароль</div>"))
-			w.WriteHeader(http.StatusUnauthorized)
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte("Error: "))
+			w.Write([]byte(err.Error()))
 			return
 		}
 
-		log.Println("Пользователь", username, "авторизован", "токен", sessionID)
+		// Проверка логина и пароля
+		authToken, err := auth.Login(c.Username, c.Password)
+		if err != nil {
+			m, err := json.Marshal(resp{Message: err.Error()})
+			if err != nil {
+				w.WriteHeader(http.StatusBadRequest)
+				w.Write([]byte("Error: "))
+				w.Write([]byte(err.Error()))
+				return
+			}
 
-		http.SetCookie(w, &http.Cookie{
-			Name:    "session_id",
-			Value:   sessionID,
-			Expires: time.Now().Add(24 * time.Hour),
-		})
+			w.WriteHeader(http.StatusUnauthorized)
+			w.Write(m)
+			return
+		}
 
-		w.Header().Set("HX-Redirect", "/")
-		//w.Write([]byte("<p>Login successful!</p>"))
+		// Отправляем токен авторизации
+		m, err := json.Marshal(resp{AuthToken: authToken})
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("Error: "))
+			w.Write([]byte(err.Error()))
+			return
+		}
+
 		w.WriteHeader(http.StatusOK)
-	}
+		w.Write(m)
 
-	return http.HandlerFunc(fn)
+		log.Println("Пользователь", c.Username, "авторизован", "токен", authToken)
+	}
 }

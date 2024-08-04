@@ -3,6 +3,7 @@ package http_web
 import (
 	"embed"
 	"hub/internal/api/http_web/authservice"
+	"hub/internal/api/http_web/handlers"
 	"hub/internal/api/http_web/mware"
 	"hub/internal/mstore"
 	"io/fs"
@@ -25,15 +26,15 @@ type App struct {
 }
 
 //
-//go:embed all:webpanel/public
+//go:embed all:webpanel/build
 var fsys embed.FS
 
 func New(mstore *mstore.MStore) *App {
-	reactAppFolder, err := fs.Sub(fsys, "webpanel/public")
+	webpanelFolder, err := fs.Sub(fsys, "webpanel/build")
 	if err != nil {
 		log.Fatal(err)
 	}
-	fileServer := http.FileServerFS(reactAppFolder)
+	fileServer := http.FileServerFS(webpanelFolder)
 
 	authService := authservice.New()
 
@@ -52,11 +53,13 @@ func New(mstore *mstore.MStore) *App {
 	// Доступно для всех
 	r.Group(func(r chi.Router) {
 		r.Handle("/*", fileServer)
+		r.Post("/api/login", handlers.Login(&authService))
 	})
 
 	// Для авторизованных пользователей
 	r.Group(func(r chi.Router) {
 		r.Use(mware.ChekAuth(&authService, "admin", "user"))
+		r.Handle("/", fileServer)
 	})
 
 	// Только для админов
