@@ -4,7 +4,6 @@ import (
 	"flag"
 	grpcapi "hub/internal/api/grpc"
 	pb "hub/internal/api/grpc/grpcapi"
-	"hub/internal/api/http_web"
 	"hub/internal/config"
 	"hub/internal/mstore"
 	"log"
@@ -17,11 +16,11 @@ import (
 	"google.golang.org/grpc"
 )
 
-const version = "2.3.0"
+const version = "2.1.1"
 
 func main() {
 	// Парсим флаги командной строки
-	newConfigFlag := flag.Bool("new-config", false, "создать hub.json конфигурации по умолчанию.")
+	newConfigFlag := flag.Bool("d", false, "создать hub.json конфигурации по умолчанию.")
 	flag.Parse()
 
 	/* Настройка логгера */
@@ -52,7 +51,7 @@ func main() {
 
 	err := cfg.Load()
 	if err != nil {
-		logger.Error("Загрузка конфигурации", "err", err)
+		logger.Error("Загрузка конфигурации", err)
 		os.Exit(1)
 	}
 
@@ -60,17 +59,8 @@ func main() {
 	mstore, err := mstore.New(cfg.P.MongoUri, cfg.P.DbName, *logger)
 	if err != nil {
 		logger.Error(err.Error())
+		os.Exit(1)
 	}
-
-	/* Запускаем web интерфейс */
-	webui := http_web.New(mstore, version)
-	go func() {
-		err := webui.Run(":80")
-		if err != nil {
-			logger.Error(err.Error())
-			os.Exit(1)
-		}
-	}()
 
 	/* Инициализация gRPC сервера */
 	lis, err := net.Listen("tcp", ":3100")

@@ -1,8 +1,0 @@
-<svg width="40" height="40" xmlns="http://www.w3.org/2000/svg">
-  <rect width="10" height="40" x="0" y="0" fill="black" />
-  <rect width="30" height="10" x="10" y="30" fill="black" />
-  <rect width="10" height="10" x="20" y="0" fill="black" />
-  <rect width="10" height="10" x="30" y="10" fill="black" />
-  <rect width="10" height="10" x="10" y="10" fill="black" />
-  <rect width="10" height="10" x="20" y="20" fill="black" />
-</svg>
