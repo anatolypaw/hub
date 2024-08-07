@@ -1,5 +1,4 @@
 .DS_Store
-/cmd/loader
-/cmd/uploader
-/cmd/hub/hub.json
-/cmd/hub/hub
+cmd/loader
+cmd/uploader
+cmd/hub/hub.js

@@ -11,7 +11,6 @@ type Config struct {
 	P        Params
 }
 
-// Хранимые параметры
 type Params struct {
 	MongoUri string
 	DbName   string
