@@ -4,9 +4,9 @@ import (
 	"flag"
 	grpcapi "hub/internal/api/grpc"
 	pb "hub/internal/api/grpc/grpcapi"
+	"hub/internal/api/http_web"
 	"hub/internal/config"
 	"hub/internal/mstore"
-	"hub/internal/web"
 	"log"
 	"net"
 
@@ -17,7 +17,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-const version = "2.2.3"
+const version = "2.3.0"
 
 func main() {
 	// Парсим флаги командной строки
@@ -52,7 +52,7 @@ func main() {
 
 	err := cfg.Load()
 	if err != nil {
-		logger.Error("Загрузка конфигурации", err)
+		logger.Error("Загрузка конфигурации", "err", err)
 		os.Exit(1)
 	}
 
@@ -63,7 +63,7 @@ func main() {
 	}
 
 	/* Запускаем web интерфейс */
-	webui := web.New(mstore)
+	webui := http_web.New(mstore, version)
 	go func() {
 		err := webui.Run(":80")
 		if err != nil {
