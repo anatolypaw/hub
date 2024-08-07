@@ -1,8 +1,17 @@
 <script lang="ts">
 	import Button from './Button.svelte';
 	import dm_logo from '../static/logo.svg';
+	import { goto } from '$app/navigation'; // Используется для навигации
 
 	export let username: string;
+
+	const handleLogout = async () => {
+		// Очистка куков
+		document.cookie = 'authToken=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;';
+
+		// Перенаправление на страницу входа
+		goto('/login.html');
+	};
 </script>
 
 <header class="bg-white border-gray-500 border-b h-10 flex justify-between items-center">
@@ -18,6 +27,6 @@
 	<!-- Кнопка выхода и отображение текущего пользователя -->
 	<div class="items-center mr-4">
 		<span class="text-gray-700 mr-4">{username ? username : '----'}</span>
-		<Button>Выйти</Button>
+		<Button onClick={handleLogout}>Выйти</Button>
 	</div>
 </header>

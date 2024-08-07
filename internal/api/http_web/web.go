@@ -19,7 +19,7 @@ type User struct {
 	Password string
 }
 
-type App struct {
+type Webpanel struct {
 	chiMux *chi.Mux
 	auth   *authservice.Auth
 	mstore *mstore.MStore
@@ -29,7 +29,7 @@ type App struct {
 //go:embed all:webpanel/build
 var fsys embed.FS
 
-func New(mstore *mstore.MStore) *App {
+func New(mstore *mstore.MStore, version string) *Webpanel {
 	webpanelFolder, err := fs.Sub(fsys, "webpanel/build")
 	if err != nil {
 		log.Fatal(err)
@@ -60,6 +60,8 @@ func New(mstore *mstore.MStore) *App {
 	r.Group(func(r chi.Router) {
 		r.Use(mware.ChekAuth(&authService, "admin", "user"))
 		r.Handle("/", fileServer)
+		r.Handle("/api/about", handlers.AboutInfo(version))
+		r.Handle("/api/userinfo", handlers.UserInfo(&authService))
 	})
 
 	// Только для админов
@@ -70,13 +72,13 @@ func New(mstore *mstore.MStore) *App {
 
 	})
 
-	return &App{
+	return &Webpanel{
 		chiMux: r,
 		auth:   &authService,
 		mstore: mstore,
 	}
 }
 
-func (a *App) Run(addr string) error {
+func (a *Webpanel) Run(addr string) error {
 	return http.ListenAndServe(addr, a.chiMux)
 }
