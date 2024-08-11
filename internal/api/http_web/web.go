@@ -54,6 +54,7 @@ func New(mstore *mstore.MStore, version string) *Webpanel {
 	r.Group(func(r chi.Router) {
 		r.Handle("/*", fileServer)
 		r.Post("/api/login", handlers.Login(&authService))
+		r.Get("/api/goods", handlers.GetAllGoods(mstore))
 	})
 
 	// Для авторизованных пользователей
@@ -62,6 +63,7 @@ func New(mstore *mstore.MStore, version string) *Webpanel {
 		r.Handle("/", fileServer)
 		r.Handle("/api/about", handlers.AboutInfo(version))
 		r.Handle("/api/userinfo", handlers.UserInfo(&authService))
+
 	})
 
 	// Только для админов

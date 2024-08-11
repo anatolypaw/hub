@@ -15,10 +15,10 @@
 		</li>
 		<li>
 			<a
-				href="/login.html"
-				class={`hover:bg-gray-200 block py-2 px-4 ${isActive('/login') ? 'bg-gray-300' : ''}`}
+				href="/goods.html"
+				class={`hover:bg-gray-200 block py-2 px-4 ${isActive('/goods.html') ? 'bg-gray-300' : ''}`}
 			>
-				Логин
+				Продукты
 			</a>
 		</li>
 	</ul>

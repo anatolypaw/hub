@@ -5,5 +5,7 @@
 	<h2 class="font-bold">2.3.0</h2>
 	<ul class="text-sm list-disc list-inside space-y-2">
 		<li>Добавлен веб интерфейс</li>
+		<li>Выводится список продуктов</li>
+		<li>Можно добавить новый продукт</li>
 	</ul>
 </section>
