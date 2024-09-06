@@ -2,9 +2,9 @@ package http_web
 
 import (
 	"embed"
-	"hub/internal/api/http_web/authservice"
-	"hub/internal/api/http_web/handlers"
-	"hub/internal/api/http_web/mware"
+	"hub/internal/adapters/rest/authservice"
+	"hub/internal/adapters/rest/handlers"
+	"hub/internal/adapters/rest/mware"
 	"hub/internal/mstore"
 	"io/fs"
 	"log"

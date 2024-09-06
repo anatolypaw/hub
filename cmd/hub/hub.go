@@ -1,91 +1,22 @@
 package main
 
 import (
-	"flag"
-	grpcapi "hub/internal/api/grpc"
-	pb "hub/internal/api/grpc/grpcapi"
-	"hub/internal/api/http_web"
-	"hub/internal/config"
-	"hub/internal/mstore"
+	"hub/internal/app"
+	"hub/internal/domain/models"
 	"log"
-	"net"
-
-	"log/slog"
 	"os"
-
-	"github.com/lmittmann/tint"
-	"google.golang.org/grpc"
 )
 
-const version = "2.3.0"
-
 func main() {
-	// Парсим флаги командной строки
-	newConfigFlag := flag.Bool("new-config", false, "создать hub.json конфигурации по умолчанию.")
-	flag.Parse()
+	log.Print("Version ", models.Version)
+	app.Run()
 
-	/* Настройка логгера */
-	//logger := slog.New(slog.Default().Handler())
-	logger := slog.New(tint.NewHandler(os.Stdout, nil))
-	//logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
-	logger.Debug("Включены DEBUG сообщения")
-	logger.Info("Включены INFO сообщения")
-	logger.Warn("Включены WARN сообщения")
-	logger.Error("Включены ERROR сообщения")
+	// Waiting signal
+	interrupt := make(chan os.Signal, 1)
 
-	logger.Info("version", "version", version)
-
-	/* Чтение настроек */
-	// Создаем конфиг
-	cfg := config.New("hub.json")
-	// Если указан параметр, создаем файл конфигурации по умолчанию
-	if *newConfigFlag {
-		cfg.P = config.DefaultConfig
-		err := cfg.Save()
-		if err != nil {
-			log.Print("Ошибка при создании файла конфигурации:", err)
-			return
-		}
-		log.Print("Создан файл конфигурации по умолчанию ", "hub.cfg")
-		return
+	select {
+	case s := <-interrupt:
+		log.Print("app - Run - signal: " + s.String())
 	}
 
-	err := cfg.Load()
-	if err != nil {
-		logger.Error("Загрузка конфигурации", "err", err)
-		os.Exit(1)
-	}
-
-	/* Подключение к базе данных */
-	mstore, err := mstore.New(cfg.P.MongoUri, cfg.P.DbName, *logger)
-	if err != nil {
-		logger.Error(err.Error())
-	}
-
-	/* Запускаем web интерфейс */
-	webui := http_web.New(mstore, version)
-	go func() {
-		err := webui.Run(":80")
-		if err != nil {
-			logger.Error(err.Error())
-			os.Exit(1)
-		}
-	}()
-
-	/* Инициализация gRPC сервера */
-	lis, err := net.Listen("tcp", ":3100")
-	if err != nil {
-		logger.Error("failed to listen gRPC: %v", err)
-	}
-
-	var opts []grpc.ServerOption
-
-	grpcserver := grpc.NewServer(opts...)
-	grpcService := grpcapi.New(mstore)
-
-	pb.RegisterHubServer(grpcserver, &grpcService)
-	logger.Info("gRPC server run on", "addres", lis.Addr())
-	if err := grpcserver.Serve(lis); err != nil {
-		logger.Error("failed to serve gRPC: %v", err)
-	}
 }

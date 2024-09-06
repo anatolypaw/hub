@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"hub/internal/entity"
+	"hub/internal/domain/entity"
 	"time"
 )
 
